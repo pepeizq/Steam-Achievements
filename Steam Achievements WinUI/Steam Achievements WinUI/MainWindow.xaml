@@ -1,0 +1,228 @@
+<Window
+    x:Class="Steam_Achievements_WinUI.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals" 
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:iconos="using:FontAwesome6.Fonts"
+    xmlns:interfaz="using:Interfaz"
+    
+    mc:Ignorable="d" x:Name="ventana">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.Background>
+            <SolidColorBrush Color="{StaticResource ColorPrimario}" Opacity="0.9"/>
+        </Grid.Background>
+
+        <Grid x:Name="gridTitulo" Grid.Row="0">
+            <Grid.Background>
+                <SolidColorBrush Color="{StaticResource ColorPrimario}" Opacity="0.5"/>
+            </Grid.Background>
+
+            <TextBlock x:Name="tbTitulo" Margin="15,0,0,0" FontSize="12" Foreground="White" VerticalAlignment="Center"/>
+        </Grid>
+
+        <NavigationView x:Name="nvPrincipal" Grid.Row="1" PaneDisplayMode="Top" IsBackButtonVisible="Collapsed" 
+                        Loaded="nvPrincipal_Loaded" ItemInvoked="nvPrincipal_ItemInvoked" IsSettingsVisible="False">
+            <NavigationView.Background>
+                <SolidColorBrush Color="{StaticResource ColorPrimario}" Opacity="1"/>
+            </NavigationView.Background>
+
+            <NavigationView.Foreground>
+                <SolidColorBrush Color="{StaticResource ColorFuente}"/>
+            </NavigationView.Foreground>
+
+            <NavigationView.Resources>
+                <SolidColorBrush x:Key="NavigationViewTopPaneBackground" Color="{StaticResource ColorPrimario}"/>
+                <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="{StaticResource ColorFuente}" />
+            </NavigationView.Resources>
+
+            <NavigationView.MenuItems>
+                <interfaz:NavigationViewItem2 x:Name="nvItemMenu">
+                    <FlyoutBase.AttachedFlyout>
+                        <MenuFlyout x:Name="menuItemMenu">
+                            <MenuFlyout.MenuFlyoutPresenterStyle>
+                                <Style TargetType="MenuFlyoutPresenter">
+                                    <Setter Property="Background" Value="{StaticResource ColorPrimario}"/>
+                                    <Setter Property="Padding" Value="10,20"/>
+                                </Style>
+                            </MenuFlyout.MenuFlyoutPresenterStyle>
+                        </MenuFlyout>
+                    </FlyoutBase.AttachedFlyout>
+
+                    <NavigationViewItem.Content>
+                        <Grid Height="28" Width="28" Padding="5" CornerRadius="3">
+                            <AnimatedIcon Foreground="{StaticResource ColorFuente}">
+                                <AnimatedIcon.Source>
+                                    <animatedvisuals:AnimatedGlobalNavigationButtonVisualSource/>
+                                </AnimatedIcon.Source>
+                                <AnimatedIcon.FallbackIconSource>
+                                    <SymbolIconSource Symbol="GlobalNavigationButton"/>
+                                </AnimatedIcon.FallbackIconSource>
+                            </AnimatedIcon>
+                        </Grid>
+                    </NavigationViewItem.Content>
+                </interfaz:NavigationViewItem2>
+            </NavigationView.MenuItems>
+
+            <NavigationView.FooterMenuItems>
+                <interfaz:NavigationViewItem2 x:Name="nvItemSubirArriba" Visibility="Collapsed">
+                    <Grid Height="28" Width="28" Padding="1" CornerRadius="3">
+                        <iconos:FontAwesome Icon="Solid_AngleUp" Foreground="{StaticResource ColorFuente}" FontSize="19"/>
+                    </Grid>
+                </interfaz:NavigationViewItem2>
+                <interfaz:NavigationViewItem2 x:Name="nvItemOpciones">
+                    <Grid Height="28" Width="28" Padding="5" CornerRadius="3">
+                        <AnimatedIcon Foreground="{StaticResource ColorFuente}">
+                            <AnimatedIcon.Source>
+                                <animatedvisuals:AnimatedSettingsVisualSource/>
+                            </AnimatedIcon.Source>
+                            <AnimatedIcon.FallbackIconSource>
+                                <SymbolIconSource Symbol="Setting"/>
+                            </AnimatedIcon.FallbackIconSource>
+                        </AnimatedIcon>
+                    </Grid>
+                </interfaz:NavigationViewItem2>
+            </NavigationView.FooterMenuItems>
+
+            <Grid>
+                <Grid.Background>
+                    <SolidColorBrush Color="{StaticResource ColorPrimario}" Opacity="0.8"/>
+                </Grid.Background>
+
+                <Grid x:Name="gridCuentas">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid x:Name="gridCuentasAnadidas" Grid.Column="0" Visibility="Collapsed">
+                        <Grid.Background>
+                            <SolidColorBrush Color="{StaticResource ColorPrimario}" Opacity="0.5"/>
+                        </Grid.Background>
+
+                        <ScrollViewer VerticalScrollBarVisibility="Visible" Padding="0,0,15,0" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                            <StackPanel x:Name="spCuentasAnadidas" Orientation="Vertical" Margin="30"/>
+                        </ScrollViewer>
+                    </Grid>
+
+                    <StackPanel x:Name="spCuentasAnadir" Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="40">
+                        <StackPanel Orientation="Horizontal">
+                            <iconos:FontAwesome Icon="Brands_Steam" Foreground="{StaticResource ColorFuente}" Margin="0,0,20,0"/>
+                            <TextBlock x:Uid="AddAccount" Foreground="{StaticResource ColorFuente}" TextWrapping="Wrap"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                            <ProgressRing x:Name="prCuentasCargar" Foreground="{StaticResource ColorFuente}" Width="20" Height="20" IsIndeterminate="True" Margin="0,0,20,0" Visibility="Collapsed"/>
+                            <TextBox x:Name="tbCuentasAnadir" PlaceholderText="https://steamcommunity.com/id/..." RequestedTheme="Dark" MinWidth="500" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel x:Name="spCuentasAvisoYaAnadida" Orientation="Horizontal" Margin="0,30,0,0" Padding="20" CornerRadius="5" Visibility="Collapsed">
+                            <StackPanel.Background>
+                                <SolidColorBrush Color="{StaticResource ColorAviso}"/>
+                            </StackPanel.Background>
+
+                            <iconos:FontAwesome Icon="Solid_CircleInfo" Foreground="{StaticResource ColorFuente}" Margin="0,0,20,0"/>
+                            <TextBlock x:Uid="MessageAccountAlready" Foreground="{StaticResource ColorFuente}" TextWrapping="Wrap" MaxWidth="400"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel x:Name="spCuentasPreguntar" Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="40" Visibility="Collapsed">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <controls:ImageEx x:Name="imagenCuentasPreguntarAnadir" IsCacheEnabled="True" EnableLazyLoading="True" Width="60" Height="60"/>
+                            <TextBlock x:Name="tbCuentasPreguntarAnadir" Foreground="{StaticResource ColorFuente}" Margin="20,0,0,0" FontSize="17px" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="600"/>
+                        </StackPanel>
+
+                        <TextBlock x:Uid="AskAddAccount" Foreground="{StaticResource ColorFuente}" Margin="0,30" FontSize="17px"/>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <interfaz:Button2 x:Name="botonCuentasAnadirSi" Background="{StaticResource ColorPrimario}" Padding="15,12,15,14" RequestedTheme="Light" BorderThickness="0" CornerRadius="5" Margin="0,0,30,0">
+                                <interfaz:Button2.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <iconos:FontAwesome Icon="Solid_ThumbsUp" Foreground="{StaticResource ColorFuente}" FontSize="15"/>
+                                        <TextBlock x:Uid="Yes" Foreground="{StaticResource ColorFuente}" Margin="15,0,0,0" FontSize="17px" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </interfaz:Button2.Content>
+                            </interfaz:Button2>
+
+                            <interfaz:Button2 x:Name="botonCuentasAnadirNo" Background="{StaticResource ColorPrimario}" Padding="15,12,15,14" RequestedTheme="Light" BorderThickness="0" CornerRadius="5">
+                                <interfaz:Button2.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <iconos:FontAwesome Icon="Solid_ThumbsDown" Foreground="{StaticResource ColorFuente}" FontSize="15"/>
+                                        <TextBlock x:Uid="No" Foreground="{StaticResource ColorFuente}" Margin="15,0,0,0" FontSize="17px" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </interfaz:Button2.Content>
+                            </interfaz:Button2>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+
+                <Grid x:Name="gridJuegos" Visibility="Collapsed">
+                    
+                </Grid>
+
+                <Grid x:Name="gridLogros" Visibility="Collapsed">
+
+                </Grid>
+
+                <Grid x:Name="gridOpciones" Visibility="Collapsed">
+                    <ScrollViewer x:Name="svOpciones" VerticalScrollBarVisibility="Visible" Padding="0,0,15,0" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                        <StackPanel Orientation="Vertical" Padding="40">
+                            <Expander IsExpanded="True" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" RequestedTheme="Dark" CornerRadius="5" Margin="0,0,0,40">
+                                <Expander.Header>
+                                    <TextBlock x:Uid="OptionsLanguage" Foreground="{StaticResource ColorFuente}" Margin="10,0,0,0"/>
+                                </Expander.Header>
+
+                                <Expander.Background>
+                                    <SolidColorBrush Color="{StaticResource ColorPrimario}" Opacity="0.6"/>
+                                </Expander.Background>
+
+                                <StackPanel Orientation="Vertical" Padding="10">
+                                    <TextBlock x:Uid="OptionsLanguageInfo" Foreground="{StaticResource ColorFuente}" Margin="0,0,0,20"/>
+                                    <interfaz:ComboBox2 x:Name="cbOpcionesIdioma" RequestedTheme="Dark" CornerRadius="5"/>
+                                </StackPanel>
+                            </Expander>
+
+                            <Expander IsExpanded="True" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" RequestedTheme="Dark" CornerRadius="5">
+                                <Expander.Header>
+                                    <TextBlock x:Uid="OptionsApp" Foreground="{StaticResource ColorFuente}" Margin="10,0,0,0"/>
+                                </Expander.Header>
+
+                                <Expander.Background>
+                                    <SolidColorBrush Color="{StaticResource ColorPrimario}" Opacity="0.6"/>
+                                </Expander.Background>
+
+                                <StackPanel Orientation="Vertical" Padding="10">
+                                    <TextBlock x:Uid="OptionsAppWindowInfo" Foreground="{StaticResource ColorFuente}" Margin="0,0,0,20"/>
+                                    <interfaz:ComboBox2 x:Name="cbOpcionesPantalla" RequestedTheme="Dark" Margin="0,0,0,25" CornerRadius="5">
+                                        <TextBlock x:Uid="OptionsAppWindow1"/>
+                                        <TextBlock x:Uid="OptionsAppWindow2"/>
+                                        <TextBlock x:Uid="OptionsAppWindow3"/>
+                                    </interfaz:ComboBox2>
+
+                                    <TextBlock x:Uid="OptionsAppCleanInfo" Foreground="{StaticResource ColorFuente}" Margin="0,0,0,20"/>
+                                    <interfaz:Button2 x:Name="botonOpcionesLimpiar" Background="{StaticResource ColorPrimario}" Padding="15,12,15,14" RequestedTheme="Light" BorderThickness="0" CornerRadius="5">
+                                        <interfaz:Button2.Content>
+                                            <StackPanel Orientation="Horizontal">
+                                                <iconos:FontAwesome Icon="Solid_Trash" Foreground="{StaticResource ColorFuente}" FontSize="15"/>
+                                                <TextBlock x:Uid="OptionsAppCleanButton" Foreground="{StaticResource ColorFuente}" Margin="15,0,0,0" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </interfaz:Button2.Content>
+                                    </interfaz:Button2>
+                                </StackPanel>
+                            </Expander>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Grid>
+        </NavigationView>
+    </Grid>
+</Window>
