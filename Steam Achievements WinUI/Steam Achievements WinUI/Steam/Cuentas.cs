@@ -1,10 +1,13 @@
 ﻿using CommunityToolkit.WinUI.UI.Controls;
+using FontAwesome6;
+using FontAwesome6.Fonts;
 using Herramientas;
 using Interfaz;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.Windows.ApplicationModel.Resources;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -22,7 +25,13 @@ namespace Steam
 
         public static void Cargar()
         {
+            ObjetosVentana.tbCuentasAñadir.GotFocus += DetectarFoco;
+            ObjetosVentana.tbCuentasAñadir.LostFocus += PerderFoco;
             ObjetosVentana.tbCuentasAñadir.TextChanged += DetectarEnlaceCuenta;
+
+            ObjetosVentana.botonCuentasAvisoPermisos.Click += AbrirImagenPermisos;
+            ObjetosVentana.botonCuentasAvisoPermisos.PointerEntered += Animaciones.EntraRatonBoton2;
+            ObjetosVentana.botonCuentasAvisoPermisos.PointerExited += Animaciones.SaleRatonBoton2;
 
             ObjetosVentana.botonCuentasAñadirSi.Click += AñadirCuenta;
             ObjetosVentana.botonCuentasAñadirSi.PointerEntered += Animaciones.EntraRatonBoton2;
@@ -34,7 +43,51 @@ namespace Steam
 
             //-------------------------------------------
 
-            ActualizarCuentas();
+            ActualizarCuentas(null);
+        }
+
+        public static void DetectarFoco(object sender, RoutedEventArgs e)
+        {
+            if (ObjetosVentana.tTipCuentasAviso.IsOpen == false)
+            {
+                ResourceLoader recursos = new ResourceLoader();
+
+                ObjetosVentana.tTipCuentasAviso.Title = recursos.GetString("Advice");
+                ObjetosVentana.tTipCuentasAviso.Subtitle = recursos.GetString("AdvicePermissions");
+                ObjetosVentana.tTipCuentasAviso.IsOpen = true;
+                ObjetosVentana.tTipCuentasAviso.Background = new SolidColorBrush(Colors.Transparent);
+                ObjetosVentana.spCuentasAvisoPermisos.Visibility = Visibility.Visible;
+            }
+        }
+
+        public static void PerderFoco(object sender, RoutedEventArgs e)
+        {
+            ObjetosVentana.tTipCuentasAviso.IsOpen = false;
+        }
+
+        public static async void AbrirImagenPermisos(object sender, RoutedEventArgs e)
+        {
+            ImageEx imagen = new ImageEx
+            {
+                Source = "Assets\\cuentapermisos.jpg",
+                Width = 818,
+                Height = 544,
+                IsCacheEnabled = true,
+                EnableLazyLoading = true,
+                CornerRadius = new CornerRadius(5)
+            };
+
+            ResourceLoader recursos = new ResourceLoader();
+
+            ContentDialog ventana = new ContentDialog
+            {
+                RequestedTheme = ElementTheme.Dark,
+                CloseButtonText = recursos.GetString("Close"),
+                Content = imagen,
+                XamlRoot = ObjetosVentana.ventana.Content.XamlRoot
+            };
+
+            await ventana.ShowAsync();
         }
 
         public static async void DetectarEnlaceCuenta(object sender, TextChangedEventArgs e)
@@ -42,7 +95,7 @@ namespace Steam
             ActivarDesactivar(false);
             ObjetosVentana.prCuentasCargar.Visibility = Visibility.Visible;
 
-            ObjetosVentana.spCuentasAvisoYaAñadida.Visibility = Visibility.Collapsed;
+            ObjetosVentana.tTipCuentasAviso.IsOpen = false;
 
             await Task.Delay(100);
 
@@ -56,15 +109,20 @@ namespace Steam
                 {
                     string usuario = tb.Text;
 
+                    usuario = usuario.Replace("https://steamcommunity.com/id/", null);
+                    usuario = usuario.Replace("http://steamcommunity.com/id/", null);
+
                     if (usuario.Contains("?") == true) 
                     { 
                         int int1 = usuario.IndexOf("?");
                         usuario = usuario.Remove(int1, usuario.Length - int1);
                     }
 
-                    usuario = usuario.Replace("https://steamcommunity.com/id/", null);
-                    usuario = usuario.Replace("http://steamcommunity.com/id/", null);
-                    usuario = usuario.Replace("/", null);
+                    if (usuario.Contains("/") == true)
+                    {
+                        int int1 = usuario.IndexOf("/");
+                        usuario = usuario.Remove(int1, usuario.Length - int1);
+                    }
 
                     string html = await Decompiladores.CogerHtml("https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key=41F2D73A0B5024E9101F8D4E8D8AC21E&vanityurl=" + usuario);
 
@@ -78,6 +136,27 @@ namespace Steam
                         }
                     }
                 }
+                else if (tb.Text.Contains("https://steamcommunity.com/profiles/") == true)
+                {
+                    string usuario = tb.Text;
+
+                    usuario = usuario.Replace("https://steamcommunity.com/profiles/", null);
+                    usuario = usuario.Replace("http://steamcommunity.com/profiles/", null);
+
+                    if (usuario.Contains("?") == true)
+                    {
+                        int int1 = usuario.IndexOf("?");
+                        usuario = usuario.Remove(int1, usuario.Length - int1);
+                    }
+
+                    if (usuario.Contains("/") == true)
+                    {
+                        int int1 = usuario.IndexOf("/");
+                        usuario = usuario.Remove(int1, usuario.Length - int1);
+                    }
+
+                    id64 = usuario;
+                }
 
                 if (id64 != string.Empty)
                 {
@@ -89,42 +168,51 @@ namespace Steam
 
                         if (cuenta != null)
                         {
-                            bool yaAñadida = false;
-
-                            List<SteamCuenta> cuentasGuardadas = await LeerCuentas();
-
-                            if (cuentasGuardadas.Count > 0)
+                            if (cuenta.Datos.Jugador.Count > 0)
                             {
-                                foreach (SteamCuenta cuentaGuardada in cuentasGuardadas)
+                                bool yaAñadida = false;
+
+                                List<SteamCuenta> cuentasGuardadas = await LeerCuentas();
+
+                                if (cuentasGuardadas.Count > 0)
                                 {
-                                    if (cuentaGuardada.ID64 == cuenta.Datos.Jugador[0].ID64)
+                                    foreach (SteamCuenta cuentaGuardada in cuentasGuardadas)
                                     {
-                                        yaAñadida = true;
+                                        if (cuentaGuardada.ID64 == cuenta.Datos.Jugador[0].ID64)
+                                        {
+                                            yaAñadida = true;
+                                        }
                                     }
                                 }
-                            }
 
-                            if (yaAñadida == false)
-                            {
-                                ObjetosVentana.spCuentasAñadir.Visibility = Visibility.Collapsed;
-                                ObjetosVentana.spCuentasPreguntar.Visibility = Visibility.Visible;
-
-                                SteamCuenta cuentaAñadir = new SteamCuenta()
+                                if (yaAñadida == false)
                                 {
-                                    ID64 = cuenta.Datos.Jugador[0].ID64,
-                                    Avatar = cuenta.Datos.Jugador[0].Avatar,
-                                    Nombre = cuenta.Datos.Jugador[0].Nombre
-                                };
+                                    ObjetosVentana.spCuentasAñadir.Visibility = Visibility.Collapsed;
+                                    ObjetosVentana.spCuentasPreguntar.Visibility = Visibility.Visible;
 
-                                ObjetosVentana.botonCuentasAñadirSi.Tag = cuentaAñadir;
+                                    SteamCuenta cuentaAñadir = new SteamCuenta()
+                                    {
+                                        ID64 = cuenta.Datos.Jugador[0].ID64,
+                                        Avatar = cuenta.Datos.Jugador[0].Avatar,
+                                        Nombre = cuenta.Datos.Jugador[0].Nombre
+                                    };
 
-                                ObjetosVentana.imagenCuentasPreguntarAñadir.Source = cuentaAñadir.Avatar;
-                                ObjetosVentana.tbCuentasPreguntarAñadir.Text = cuentaAñadir.Nombre;
-                            }
-                            else
-                            {
-                                ObjetosVentana.spCuentasAvisoYaAñadida.Visibility = Visibility.Visible;
-                            }
+                                    ObjetosVentana.botonCuentasAñadirSi.Tag = cuentaAñadir;
+
+                                    ObjetosVentana.imagenCuentasPreguntarAñadir.Source = cuentaAñadir.Avatar;
+                                    ObjetosVentana.tbCuentasPreguntarAñadir.Text = cuentaAñadir.Nombre;
+                                }
+                                else
+                                {
+                                    ResourceLoader recursos = new ResourceLoader();
+
+                                    ObjetosVentana.tTipCuentasAviso.Title = null;
+                                    ObjetosVentana.tTipCuentasAviso.Subtitle = recursos.GetString("AccountAlreadyMessage");
+                                    ObjetosVentana.tTipCuentasAviso.IsOpen = true;
+                                    ObjetosVentana.tTipCuentasAviso.Background = new SolidColorBrush((Color)Application.Current.Resources["ColorAviso"]);
+                                    ObjetosVentana.spCuentasAvisoPermisos.Visibility = Visibility.Collapsed;
+                                }
+                            }                          
                         }
                     }
                 }
@@ -138,13 +226,22 @@ namespace Steam
         {
             List<SteamCuenta> cuentas = new List<SteamCuenta>();
 
-            StorageFile ficheroCuentas = await carpetaCuentas.GetFileAsync(nombreFicheroCuentas);
-        
+            StorageFile ficheroCuentas = null;
+            
+            try
+            {
+                ficheroCuentas = await carpetaCuentas.GetFileAsync(nombreFicheroCuentas);
+            }
+            catch 
+            {
+                ficheroCuentas = await carpetaCuentas.CreateFileAsync(nombreFicheroCuentas, CreationCollisionOption.ReplaceExisting);
+            }        
+       
             if (ficheroCuentas != null)
             {
                 string textoCuentas = await FileIO.ReadTextAsync(ficheroCuentas);
-
-                if (textoCuentas != null)
+                
+                if (textoCuentas != null && textoCuentas != string.Empty)
                 {
                     cuentas = JsonConvert.DeserializeObject<List<SteamCuenta>>(textoCuentas);
                 }
@@ -155,6 +252,8 @@ namespace Steam
 
         public static async void AñadirCuenta(object sender, RoutedEventArgs e)
         {
+            ActivarDesactivar(false);
+
             List<SteamCuenta> cuentas = await LeerCuentas();
 
             SteamCuenta cuentaAñadir = ObjetosVentana.botonCuentasAñadirSi.Tag as SteamCuenta;
@@ -162,14 +261,54 @@ namespace Steam
             cuentas.Add(cuentaAñadir);
 
             string textoCuentasAñadido = JsonConvert.SerializeObject(cuentas, Formatting.Indented);
-
             StorageFile ficheroCuentas = await carpetaCuentas.GetFileAsync(nombreFicheroCuentas);
             await FileIO.WriteTextAsync(ficheroCuentas, textoCuentasAñadido);
 
-            ActualizarCuentas();
+            ActualizarCuentas(cuentaAñadir);
+
+            ObjetosVentana.spCuentasAñadir.Visibility = Visibility.Visible;
+            ObjetosVentana.spCuentasPreguntar.Visibility = Visibility.Collapsed;
+
+            ObjetosVentana.tbCuentasAñadir.Text = string.Empty;
+
+            ActivarDesactivar(true);
         }
 
-        public static async void ActualizarCuentas()
+        public static async void BorrarCuenta(object sender, RoutedEventArgs e)
+        {
+            ActivarDesactivar(false);
+
+            List<SteamCuenta> cuentas = await LeerCuentas();
+
+            Button2 botonBorrar = sender as Button2;
+            SteamCuenta cuentaBorrar = botonBorrar.Tag as SteamCuenta;
+
+            if (cuentas.Count > 0)
+            {
+                int i = 0;
+                foreach (SteamCuenta cuenta in cuentas)
+                {
+                    if (cuenta.ID64 == cuentaBorrar.ID64)
+                    {
+                        break;
+                    }
+
+                    i += 1;
+                }
+
+                cuentas.RemoveAt(i);
+            }
+
+            string textoCuentasAñadido = JsonConvert.SerializeObject(cuentas, Formatting.Indented);
+            StorageFile ficheroCuentas = await carpetaCuentas.GetFileAsync(nombreFicheroCuentas);
+            await FileIO.WriteTextAsync(ficheroCuentas, textoCuentasAñadido);
+
+            ActualizarCuentas(null);
+
+            ActivarDesactivar(true);
+        }
+
+        public static async void ActualizarCuentas(SteamCuenta cuentaSeñalar)
         {
             ObjetosVentana.spCuentasAñadidas.Children.Clear();
 
@@ -177,14 +316,29 @@ namespace Steam
            
             if (cuentas.Count > 0)
             {
+                cuentas.Sort(delegate (SteamCuenta c1, SteamCuenta c2) { return c1.Nombre.CompareTo(c2.Nombre); });
+
                 ObjetosVentana.gridCuentasAñadidas.Visibility = Visibility.Visible;
 
                 foreach (SteamCuenta cuenta in cuentas)
                 {
-                    StackPanel sp = new StackPanel
+                    Grid grid = new Grid
                     {
-                        Orientation = Orientation.Horizontal
+                        Width = 400,
+                        Margin = new Thickness(0, 5, 0, 5)
                     };
+
+                    ColumnDefinition col1 = new ColumnDefinition();
+                    ColumnDefinition col2 = new ColumnDefinition();
+                    ColumnDefinition col3 = new ColumnDefinition();
+
+                    col1.Width = new GridLength(1, GridUnitType.Auto);
+                    col2.Width = new GridLength(1, GridUnitType.Star);
+                    col3.Width = new GridLength(1, GridUnitType.Auto);
+
+                    grid.ColumnDefinitions.Add(col1);
+                    grid.ColumnDefinitions.Add(col2);
+                    grid.ColumnDefinitions.Add(col3);
 
                     //-----------------------------------------------
 
@@ -201,7 +355,8 @@ namespace Steam
                         Source = cuenta.Avatar,
                         Width = 50,
                         Height = 50,
-                        Margin = new Thickness(0, 0, 20, 0)
+                        Margin = new Thickness(0, 0, 20, 0),
+                        CornerRadius = new CornerRadius(5)
                     };
 
                     spBoton1.Children.Add(imagenBoton1);
@@ -209,7 +364,7 @@ namespace Steam
                     TextBlock tbBoton1 = new TextBlock
                     {
                         Foreground = new SolidColorBrush((Color)Application.Current.Resources["ColorFuente"]),
-                        MaxWidth = 500,
+                        MaxWidth = 350,
                         Text = cuenta.Nombre,
                         TextWrapping = TextWrapping.Wrap,
                         VerticalAlignment = VerticalAlignment.Center
@@ -220,21 +375,88 @@ namespace Steam
                     Button2 boton1 = new Button2
                     {
                         Content = spBoton1,
-                        RequestedTheme = ElementTheme.Dark,
+                        RequestedTheme = ElementTheme.Light,
                         CornerRadius = new CornerRadius(5),
                         Background = new SolidColorBrush(Colors.Transparent),
                         BorderThickness = new Thickness(0),
-                        Padding = new Thickness(20)
+                        Padding = new Thickness(20),
+                        HorizontalAlignment = HorizontalAlignment.Left,
+                        Tag = cuenta
                     };
 
-                    sp.Children.Add(boton1);
+                    boton1.Click += Juegos.Cargar;
+                    boton1.PointerEntered += Animaciones.EntraRatonBoton2;
+                    boton1.PointerExited += Animaciones.SaleRatonBoton2;
+
+                    boton1.SetValue(Grid.ColumnProperty, 0);
+                    grid.Children.Add(boton1);
+
+                    if (cuentaSeñalar != null)
+                    {
+                        if (cuentaSeñalar.ID64 == cuenta.ID64)
+                        {
+                            ResourceLoader recursos = new ResourceLoader();
+
+                            SymbolIconSource iconoConsejo = new SymbolIconSource
+                            {
+                                Foreground = new SolidColorBrush((Color)Application.Current.Resources["ColorFuente"]),
+                                Symbol = Symbol.Important
+                            };
+
+                            TeachingTip consejo = new TeachingTip
+                            {
+                                Target = boton1,
+                                IsOpen = true,
+                                RequestedTheme = ElementTheme.Dark,
+                                Subtitle = recursos.GetString("AdviceLoadAccount"),
+                                Title = recursos.GetString("Advice"),
+                                IconSource = iconoConsejo,
+                                Tag = grid
+                            };
+                       
+                            consejo.CloseButtonClick += Consejos.CerrarConsejo;
+
+                            grid.Children.Add(consejo);
+                        }
+                    }
 
                     //-----------------------------------------------
 
+                    StackPanel spBoton2 = new StackPanel
+                    {
+                        Orientation = Orientation.Horizontal,
+                        VerticalAlignment = VerticalAlignment.Center
+                    };
+
+                    FontAwesome icono2 = new FontAwesome
+                    {
+                        Foreground = new SolidColorBrush((Color)Application.Current.Resources["ColorFuente"]),
+                        Icon = EFontAwesomeIcon.Solid_TrashCan
+                    };
+
+                    spBoton2.Children.Add(icono2);
+
+                    Button2 boton2 = new Button2
+                    {
+                        Content = spBoton2,
+                        RequestedTheme = ElementTheme.Light,
+                        CornerRadius = new CornerRadius(5),
+                        Background = new SolidColorBrush(Colors.Transparent),
+                        BorderThickness = new Thickness(0),
+                        Padding = new Thickness(12),
+                        Tag = cuenta
+                    };
+
+                    boton2.Click += BorrarCuenta;
+                    boton2.PointerEntered += Animaciones.EntraRatonBoton2;
+                    boton2.PointerExited += Animaciones.SaleRatonBoton2;
+
+                    boton2.SetValue(Grid.ColumnProperty, 2);
+                    grid.Children.Add(boton2);
 
                     //-----------------------------------------------
 
-                    ObjetosVentana.spCuentasAñadidas.Children.Add(sp);
+                    ObjetosVentana.spCuentasAñadidas.Children.Add(grid);
                 }
             }
             else
@@ -254,6 +476,21 @@ namespace Steam
         public static void ActivarDesactivar(bool estado)
         {
             ObjetosVentana.tbCuentasAñadir.IsEnabled = estado;
+
+            ObjetosVentana.botonCuentasAñadirSi.IsEnabled = estado;
+            ObjetosVentana.botonCuentasAñadirNo.IsEnabled = estado;
+
+            foreach (Grid grid in ObjetosVentana.spCuentasAñadidas.Children)
+            {
+                foreach (Object objeto in grid.Children) 
+                {
+                    if (objeto.GetType() == typeof(Button2))
+                    {
+                        Button2 boton = objeto as Button2;
+                        boton.IsEnabled = estado;
+                    }
+                }
+            }
         }
     }
 

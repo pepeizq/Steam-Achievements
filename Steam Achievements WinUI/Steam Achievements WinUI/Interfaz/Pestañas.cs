@@ -1,4 +1,5 @@
-﻿using FontAwesome6.Fonts;
+﻿using CommunityToolkit.WinUI.UI.Controls;
+using FontAwesome6.Fonts;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -34,86 +35,53 @@ namespace Interfaz
             ObjetosVentana.nvItemOpciones.PointerExited += Animaciones.SaleRatonNvItem2;
         }
 
-        public static void Visibilidad(Grid grid, bool nv, StackPanel sp, bool mostrarNombre)
+        public static void Visibilidad(Grid grid)
         {
-            foreach (var item in ObjetosVentana.nvPrincipal.MenuItems)
-            {
-                if (item.GetType() == typeof(StackPanel2))
-                {
-                    StackPanel2 spItem = item as StackPanel2;
-
-                    if (spItem.Children.Count > 0)
-                    {
-                        if (spItem.Children[1] != null)
-                        {
-                            if (spItem.Children[1].GetType() == typeof(TextBlock))
-                            {
-                                TextBlock tb = spItem.Children[1] as TextBlock;
-                                tb.Visibility = Visibility.Collapsed;
-                            }
-                        }
-                    }                   
-                }
-            }
-
             ObjetosVentana.nvItemSubirArriba.Visibility = Visibility.Collapsed;
 
-            ObjetosVentana.nvPrincipal.Visibility = Visibility.Collapsed;
             ObjetosVentana.gridCuentas.Visibility = Visibility.Collapsed;
+            ObjetosVentana.gridJuegos.Visibility = Visibility.Collapsed;
+            ObjetosVentana.gridLogros.Visibility = Visibility.Collapsed;
             ObjetosVentana.gridOpciones.Visibility = Visibility.Collapsed;
 
             grid.Visibility = Visibility.Visible;
-
-            if (nv == true)
-            {
-                ObjetosVentana.nvPrincipal.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                ObjetosVentana.nvPrincipal.Visibility = Visibility.Collapsed;
-            }
-
-            if (mostrarNombre == true) 
-            {
-                if (sp.Children[1] != null)
-                {
-                    if (sp.Children[1].GetType() == typeof(TextBlock))
-                    {
-                        TextBlock tb = sp.Children[1] as TextBlock;
-                        tb.Visibility = Visibility.Visible;
-                    }
-                }
-            }
         }
 
-        public static void CreadorItems(FontAwesome6.EFontAwesomeIcon icono, string nombre)
+        public static void CreadorItems(string imagenEnlace, string nombre, int posicion)
         {
             StackPanel2 sp = new StackPanel2
             {
                 CornerRadius = new CornerRadius(3),
                 Padding = new Thickness(5),
                 Orientation = Orientation.Horizontal,
-                Height = 30
+                Height = 30,
+                Tag = posicion
             };
 
             sp.PointerEntered += Animaciones.EntraRatonStackPanel2;
             sp.PointerExited += Animaciones.SaleRatonStackPanel2;
 
-            FontAwesome imagen = new FontAwesome
+            if (imagenEnlace != null)
             {
-                Foreground = new SolidColorBrush((Color)Application.Current.Resources["ColorFuente"]),
-                Icon = icono
-            };
+                ImageEx imagen = new ImageEx
+                {
+                    Source = imagenEnlace,
+                    IsCacheEnabled = true,
+                    EnableLazyLoading = true,
+                    MaxHeight = 30,
+                    MaxWidth = 30,
+                    CornerRadius = new CornerRadius(2),
+                    Margin = new Thickness(0, 0, 15, 0)
+                };
 
-            sp.Children.Add(imagen);
+                sp.Children.Add(imagen);
+            }
 
             TextBlock tb = new TextBlock
             {
                 Text = nombre,
                 Foreground = new SolidColorBrush((Color)Application.Current.Resources["ColorFuente"]),
-                Margin = new Thickness(15, 0, 0, 0),
-                VerticalAlignment = VerticalAlignment.Center,
-                Visibility = Visibility.Collapsed
+                VerticalAlignment = VerticalAlignment.Center
             };
 
             sp.Children.Add(tb);
@@ -128,8 +96,31 @@ namespace Interfaz
                 ToolTipService.SetToolTip(sp, tbTt);
                 ToolTipService.SetPlacement(sp, PlacementMode.Bottom);
             }
-            
-            ObjetosVentana.nvPrincipal.MenuItems.Insert(1, sp);
+
+            ObjetosVentana.nvPrincipal.MenuItems.Insert(posicion, sp);
+        }
+
+        public static void CrearSeparador(int posicion)
+        {
+            StackPanel2 sp = new StackPanel2
+            {
+                CornerRadius = new CornerRadius(3),
+                Padding = new Thickness(0),
+                Orientation = Orientation.Horizontal,
+                Height = 30,
+                Tag = posicion,
+                IsHitTestVisible = false
+            };
+
+            FontAwesome icono = new FontAwesome
+            {
+                Foreground = new SolidColorBrush((Color)Application.Current.Resources["ColorFuente"]),
+                Icon = FontAwesome6.EFontAwesomeIcon.Solid_ChevronRight
+            };
+
+            sp.Children.Add(icono);
+
+            ObjetosVentana.nvPrincipal.MenuItems.Insert(posicion, sp);
         }
 
         public static void EntraRatonNvItemMenu(object sender, RoutedEventArgs e)

@@ -117,11 +117,35 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AccountAlreadyMessage" xml:space="preserve">
+    <value>Cuenta ya añadida a la aplicación</value>
+  </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Cuentas</value>
+  </data>
   <data name="AddAccount.Text" xml:space="preserve">
     <value>Añade un enlace a la cuenta de Steam Community:</value>
   </data>
+  <data name="Advice" xml:space="preserve">
+    <value>Consejo</value>
+  </data>
+  <data name="AdviceLoadAccount" xml:space="preserve">
+    <value>Clickea sobre la cuenta para cargar los juegos con logros</value>
+  </data>
+  <data name="AdvicePermissions" xml:space="preserve">
+    <value>Para poder cargar los juegos con logros, la cuenta de Steam debe tener en público los permisos: "Mi perfil" y "Detalles de los juegos".</value>
+  </data>
+  <data name="AdvicePermissionsImage.Text" xml:space="preserve">
+    <value>Abrir imagen con los permisos correctos</value>
+  </data>
   <data name="AskAddAccount.Text" xml:space="preserve">
     <value>¿Deseas añadir esta cuenta a la aplicación?</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Cerrar</value>
+  </data>
+  <data name="Games" xml:space="preserve">
+    <value>Juegos</value>
   </data>
   <data name="MenuContact" xml:space="preserve">
     <value>Contactar</value>
@@ -137,9 +161,6 @@
   </data>
   <data name="MenuRate" xml:space="preserve">
     <value>Calificar la Aplicación</value>
-  </data>
-  <data name="MessageAccountAlready.Text" xml:space="preserve">
-    <value>Cuenta ya añadida a la aplicación</value>
   </data>
   <data name="No.Text" xml:space="preserve">
     <value>No</value>

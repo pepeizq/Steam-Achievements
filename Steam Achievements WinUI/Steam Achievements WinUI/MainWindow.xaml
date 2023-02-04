@@ -116,39 +116,48 @@
 
                     <StackPanel x:Name="spCuentasAnadir" Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="40">
                         <StackPanel Orientation="Horizontal">
-                            <iconos:FontAwesome Icon="Brands_Steam" Foreground="{StaticResource ColorFuente}" Margin="0,0,20,0"/>
-                            <TextBlock x:Uid="AddAccount" Foreground="{StaticResource ColorFuente}" TextWrapping="Wrap"/>
+                            <iconos:FontAwesome Icon="Brands_Steam" Foreground="{StaticResource ColorFuente}" Margin="0,0,20,0" FontSize="32"/>
+                            <TextBlock x:Uid="AddAccount" Foreground="{StaticResource ColorFuente}" TextWrapping="Wrap" FontSize="17" VerticalAlignment="Center"/>
                         </StackPanel>
 
-                        <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
-                            <ProgressRing x:Name="prCuentasCargar" Foreground="{StaticResource ColorFuente}" Width="20" Height="20" IsIndeterminate="True" Margin="0,0,20,0" Visibility="Collapsed"/>
-                            <TextBox x:Name="tbCuentasAnadir" PlaceholderText="https://steamcommunity.com/id/..." RequestedTheme="Dark" MinWidth="500" VerticalAlignment="Center"/>
-                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,25,0,0">
+                            <ProgressRing x:Name="prCuentasCargar" Foreground="{StaticResource ColorFuente}" Width="25" Height="25" IsIndeterminate="True" Margin="0,0,20,0" Visibility="Collapsed"/>
+                            <TextBox x:Name="tbCuentasAnadir" PlaceholderText="https://steamcommunity.com/id/..." FontSize="17" RequestedTheme="Dark" MinWidth="500" VerticalAlignment="Center"/>
 
-                        <StackPanel x:Name="spCuentasAvisoYaAnadida" Orientation="Horizontal" Margin="0,30,0,0" Padding="20" CornerRadius="5" Visibility="Collapsed">
-                            <StackPanel.Background>
-                                <SolidColorBrush Color="{StaticResource ColorAviso}"/>
-                            </StackPanel.Background>
-
-                            <iconos:FontAwesome Icon="Solid_CircleInfo" Foreground="{StaticResource ColorFuente}" Margin="0,0,20,0"/>
-                            <TextBlock x:Uid="MessageAccountAlready" Foreground="{StaticResource ColorFuente}" TextWrapping="Wrap" MaxWidth="400"/>
+                            <TeachingTip x:Name="tTipCuentasAviso" Target="{x:Bind tbCuentasAnadir}" IsOpen="False" RequestedTheme="Dark" PreferredPlacement="Bottom">
+                                <TeachingTip.Content>
+                                    <StackPanel x:Name="spCuentasAvisoPermisos" Orientation="Horizontal" Width="600" Margin="0,20,0,0">
+                                        <interfaz:Button2 x:Name="botonCuentasAvisoPermisos" Padding="12" RequestedTheme="Light" BorderThickness="0" CornerRadius="5">
+                                            <interfaz:Button2.Background>
+                                                <SolidColorBrush Color="{StaticResource ColorPrimario}" Opacity="0.4"/>
+                                            </interfaz:Button2.Background>
+                                            
+                                            <interfaz:Button2.Content>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock x:Uid="AdvicePermissionsImage" Foreground="{StaticResource ColorFuente}" TextWrapping="Wrap"/>
+                                                </StackPanel>
+                                            </interfaz:Button2.Content>
+                                        </interfaz:Button2>
+                                    </StackPanel>
+                                </TeachingTip.Content>
+                            </TeachingTip>
                         </StackPanel>
                     </StackPanel>
 
                     <StackPanel x:Name="spCuentasPreguntar" Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="40" Visibility="Collapsed">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <controls:ImageEx x:Name="imagenCuentasPreguntarAnadir" IsCacheEnabled="True" EnableLazyLoading="True" Width="60" Height="60"/>
-                            <TextBlock x:Name="tbCuentasPreguntarAnadir" Foreground="{StaticResource ColorFuente}" Margin="20,0,0,0" FontSize="17px" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="600"/>
+                            <controls:ImageEx x:Name="imagenCuentasPreguntarAnadir" IsCacheEnabled="True" EnableLazyLoading="True" Width="60" Height="60" CornerRadius="5"/>
+                            <TextBlock x:Name="tbCuentasPreguntarAnadir" Foreground="{StaticResource ColorFuente}" Margin="20,0,0,0" FontSize="17" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="600"/>
                         </StackPanel>
 
-                        <TextBlock x:Uid="AskAddAccount" Foreground="{StaticResource ColorFuente}" Margin="0,30" FontSize="17px"/>
+                        <TextBlock x:Uid="AskAddAccount" Foreground="{StaticResource ColorFuente}" Margin="0,30" FontSize="17"/>
 
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <interfaz:Button2 x:Name="botonCuentasAnadirSi" Background="{StaticResource ColorPrimario}" Padding="15,12,15,14" RequestedTheme="Light" BorderThickness="0" CornerRadius="5" Margin="0,0,30,0">
                                 <interfaz:Button2.Content>
                                     <StackPanel Orientation="Horizontal">
                                         <iconos:FontAwesome Icon="Solid_ThumbsUp" Foreground="{StaticResource ColorFuente}" FontSize="15"/>
-                                        <TextBlock x:Uid="Yes" Foreground="{StaticResource ColorFuente}" Margin="15,0,0,0" FontSize="17px" VerticalAlignment="Center"/>
+                                        <TextBlock x:Uid="Yes" Foreground="{StaticResource ColorFuente}" Margin="15,0,0,0" FontSize="17" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </interfaz:Button2.Content>
                             </interfaz:Button2>
@@ -166,7 +175,13 @@
                 </Grid>
 
                 <Grid x:Name="gridJuegos" Visibility="Collapsed">
-                    
+                    <ScrollViewer x:Name="svJuegos" VerticalScrollBarVisibility="Visible" Padding="0,0,15,0" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                        <StackPanel Orientation="Vertical">
+                            <ProgressRing x:Name="prJuegos" IsIndeterminate="True" Foreground="{StaticResource ColorFuente}" VerticalAlignment="Center" HorizontalAlignment="Left" Visibility="Collapsed" Margin="30"/>
+
+                            <controls:AdaptiveGridView x:Name="gvJuegos" DesiredWidth="200" StretchContentForSingleRow="False"/>
+                        </StackPanel>
+                    </ScrollViewer>
                 </Grid>
 
                 <Grid x:Name="gridLogros" Visibility="Collapsed">

@@ -37,6 +37,8 @@ namespace Steam_Achievements_WinUI
             //-------------------------------------------------------------------
 
             ObjetosVentana.gridCuentas = gridCuentas;
+            ObjetosVentana.gridJuegos = gridJuegos;
+            ObjetosVentana.gridLogros = gridLogros;
             ObjetosVentana.gridOpciones = gridOpciones;
 
             //-------------------------------------------------------------------
@@ -46,12 +48,20 @@ namespace Steam_Achievements_WinUI
             ObjetosVentana.spCuentasAñadir = spCuentasAnadir;
             ObjetosVentana.prCuentasCargar = prCuentasCargar;
             ObjetosVentana.tbCuentasAñadir = tbCuentasAnadir;
-            ObjetosVentana.spCuentasAvisoYaAñadida = spCuentasAvisoYaAnadida;
+            ObjetosVentana.tTipCuentasAviso = tTipCuentasAviso;
+            ObjetosVentana.spCuentasAvisoPermisos = spCuentasAvisoPermisos;
+            ObjetosVentana.botonCuentasAvisoPermisos = botonCuentasAvisoPermisos;
             ObjetosVentana.spCuentasPreguntar = spCuentasPreguntar;
             ObjetosVentana.imagenCuentasPreguntarAñadir = imagenCuentasPreguntarAnadir;
             ObjetosVentana.tbCuentasPreguntarAñadir = tbCuentasPreguntarAnadir;
             ObjetosVentana.botonCuentasAñadirSi = botonCuentasAnadirSi;
             ObjetosVentana.botonCuentasAñadirNo = botonCuentasAnadirNo;
+
+            //-------------------------------------------------------------------
+
+            ObjetosVentana.svJuegos = svJuegos;
+            ObjetosVentana.prJuegos = prJuegos;
+            ObjetosVentana.gvJuegos = gvJuegos;
 
             //-------------------------------------------------------------------
 
@@ -75,6 +85,8 @@ namespace Steam_Achievements_WinUI
             //-------------------------------------------------------------------
 
             public static Grid gridCuentas { get; set; }
+            public static Grid gridJuegos { get; set; }
+            public static Grid gridLogros { get; set; }
             public static Grid gridOpciones { get; set; }
 
             //-------------------------------------------------------------------
@@ -84,12 +96,20 @@ namespace Steam_Achievements_WinUI
             public static StackPanel spCuentasAñadir { get; set; }
             public static ProgressRing prCuentasCargar { get; set; }
             public static TextBox tbCuentasAñadir { get; set; }
-            public static StackPanel spCuentasAvisoYaAñadida { get; set; }
+            public static TeachingTip tTipCuentasAviso { get; set; }
+            public static StackPanel spCuentasAvisoPermisos { get; set; }
+            public static Button botonCuentasAvisoPermisos { get; set; }
             public static StackPanel spCuentasPreguntar { get; set; }
             public static ImageEx imagenCuentasPreguntarAñadir { get; set; }
             public static TextBlock tbCuentasPreguntarAñadir { get; set; }
             public static Button botonCuentasAñadirSi { get; set; }
             public static Button botonCuentasAñadirNo { get; set; }
+
+            //-------------------------------------------------------------------
+
+            public static ScrollViewer svJuegos { get; set; }
+            public static ProgressRing prJuegos { get; set; }
+            public static AdaptiveGridView gvJuegos { get; set; }
 
             //-------------------------------------------------------------------
 
@@ -103,7 +123,7 @@ namespace Steam_Achievements_WinUI
         {
             ResourceLoader recursos = new ResourceLoader();
    
-            //Pestañas.CreadorItems(FontAwesome6.EFontAwesomeIcon.Solid_Palette, recursos.GetString("Skins"));
+            Pestañas.CreadorItems(null, recursos.GetString("Accounts"), 1);
 
             //StackPanel sp = (StackPanel)ObjetosVentana.nvPrincipal.MenuItems[1];
             //Pestañas.Visibilidad(gridSkins, true, sp, true);
@@ -125,7 +145,7 @@ namespace Steam_Achievements_WinUI
                     }
                     else if (item.Name == "nvItemOpciones")
                     {
-                        Pestañas.Visibilidad(gridOpciones, true, null, false);
+                        Pestañas.Visibilidad(gridOpciones);
                         BarraTitulo.CambiarTitulo(recursos.GetString("Options"));
                         ScrollViewers.EnseñarSubir(svOpciones);
                     }
@@ -138,18 +158,36 @@ namespace Steam_Achievements_WinUI
                 {
                     StackPanel2 sp = (StackPanel2)args.InvokedItem;
 
-                    if (sp.Children[1] != null)
+                    if (sp.Tag != null)
                     {
-                        if (sp.Children[1].GetType() == typeof(TextBlock))
-                        {
-                            TextBlock tb = sp.Children[1] as TextBlock;
+                        int numero = (int)sp.Tag;
 
-                            if (tb.Text == recursos.GetString("Skins"))
+                        if (numero == 1)
+                        {
+                            Pestañas.Visibilidad(gridCuentas);
+                            BarraTitulo.CambiarTitulo(null);
+
+                            if (ObjetosVentana.nvPrincipal.MenuItems.Count > 2)
                             {
-                                //Pestañas.Visibilidad(gridSkins, true, sp, true);
-                                BarraTitulo.CambiarTitulo(null);
-                                //ScrollViewers.EnseñarSubir(svSkins);
+                                int i = ObjetosVentana.nvPrincipal.MenuItems.Count;
+                                int j = 0;
+                                while (i > j)
+                                {
+                                    i -= 1;
+
+                                    if (i > 1)
+                                    {
+                                        ObjetosVentana.nvPrincipal.MenuItems.RemoveAt(i);
+                                    }          
+                                }
                             }
+                        }
+                        else if (numero == 3)
+                        {
+                            Pestañas.Visibilidad(gridJuegos);
+                            BarraTitulo.CambiarTitulo(null);
+
+
                         }
                     }
                 }

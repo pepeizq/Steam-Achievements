@@ -28,4 +28,10 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Assets\cuentapermisos.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

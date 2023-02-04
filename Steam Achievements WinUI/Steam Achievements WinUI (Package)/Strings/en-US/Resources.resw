@@ -117,11 +117,35 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AccountAlreadyMessage" xml:space="preserve">
+    <value>Account already added to the app</value>
+  </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Accounts</value>
+  </data>
   <data name="AddAccount.Text" xml:space="preserve">
     <value>Add a link to the Steam Community account:</value>
   </data>
+  <data name="Advice" xml:space="preserve">
+    <value>Advice</value>
+  </data>
+  <data name="AdviceLoadAccount" xml:space="preserve">
+    <value>Click on the account to load the games with achievements</value>
+  </data>
+  <data name="AdvicePermissions" xml:space="preserve">
+    <value>In order to load games with achievements, the Steam account must have public permissions: "My Profile" and "Game Details".</value>
+  </data>
+  <data name="AdvicePermissionsImage.Text" xml:space="preserve">
+    <value>Open image with the correct permissions</value>
+  </data>
   <data name="AskAddAccount.Text" xml:space="preserve">
     <value>Do you want to add this account to the app?</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="Games" xml:space="preserve">
+    <value>Games</value>
   </data>
   <data name="MenuContact" xml:space="preserve">
     <value>Contact</value>
@@ -137,9 +161,6 @@
   </data>
   <data name="MenuRate" xml:space="preserve">
     <value>Rate the App</value>
-  </data>
-  <data name="MessageAccountAlready.Text" xml:space="preserve">
-    <value>Account already added to the app</value>
   </data>
   <data name="No.Text" xml:space="preserve">
     <value>No</value>
