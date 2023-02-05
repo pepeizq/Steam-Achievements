@@ -322,6 +322,24 @@ namespace Steam
 
                 foreach (SteamCuenta cuenta in cuentas)
                 {
+                    bool fallo = false;
+
+                    try
+                    {
+                        await carpetaCuentas.GetFolderAsync(cuenta.ID64);
+                    }
+                    catch
+                    {
+                        fallo = true;
+                    }
+
+                    if (fallo == true)
+                    {
+                        await carpetaCuentas.CreateFolderAsync(cuenta.ID64, CreationCollisionOption.ReplaceExisting);
+                    }
+
+                    //-----------------------------------------------------
+
                     Grid grid = new Grid
                     {
                         Width = 400,

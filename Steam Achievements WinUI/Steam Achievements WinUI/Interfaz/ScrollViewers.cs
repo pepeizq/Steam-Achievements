@@ -14,6 +14,7 @@ namespace Interfaz
             ObjetosVentana.nvItemSubirArriba.PointerEntered += Animaciones.EntraRatonNvItem2;
             ObjetosVentana.nvItemSubirArriba.PointerExited += Animaciones.SaleRatonNvItem2;
 
+            ObjetosVentana.svJuegos.ViewChanging += svScroll;
             ObjetosVentana.svOpciones.ViewChanging += svScroll;
         }
 
@@ -39,7 +40,11 @@ namespace Interfaz
             Grid grid = nvItem.Content as Grid;
             grid.Background = new SolidColorBrush(Colors.Transparent);
 
-            if (ObjetosVentana.gridOpciones.Visibility == Visibility.Visible)
+            if (ObjetosVentana.gridJuegos.Visibility == Visibility.Visible)
+            {
+                ObjetosVentana.svJuegos.ChangeView(null, 0, null);
+            }
+            else if (ObjetosVentana.gridOpciones.Visibility == Visibility.Visible)
             {
                 ObjetosVentana.svOpciones.ChangeView(null, 0, null);
             }

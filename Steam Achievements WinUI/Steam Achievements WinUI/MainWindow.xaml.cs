@@ -21,6 +21,7 @@ namespace Steam_Achievements_WinUI
             Interfaz.Menu.Cargar();
             Opciones.CargarDatos();
             Steam.Cuentas.Cargar();
+            Steam.Juegos.CargarSv();
         }
 
         public void CargarObjetosVentana()

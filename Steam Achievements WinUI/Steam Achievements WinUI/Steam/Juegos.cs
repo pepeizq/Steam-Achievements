@@ -1,9 +1,13 @@
-﻿using CommunityToolkit.WinUI.UI.Controls;
-using Herramientas;
+﻿using Herramientas;
 using Interfaz;
+using Microsoft.UI;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.Windows.ApplicationModel.Resources;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using static Steam_Achievements_WinUI.MainWindow;
@@ -14,6 +18,11 @@ namespace Steam
     {
         private static string dominioImagen = "https://cdn.cloudflare.steamstatic.com";
         private static string dominioIcono = "https://steamcdn-a.akamaihd.net";
+
+        public static async void CargarSv()
+        {
+            ObjetosVentana.svJuegos.ViewChanging += CargarMasJuegos;
+        }
 
         public static async void Cargar(object sender, RoutedEventArgs e)
         {
@@ -56,70 +65,205 @@ namespace Steam
                 { 
                     if (json.Datos != null)
                     {
-                        if (json.Datos.Juegos.Count > 0)
+                        if (json.Datos.Juegos != null)
                         {
-                            foreach (SteamJuegosAPIJuego juego in json.Datos.Juegos)
+                            if (json.Datos.Juegos.Count > 0)
                             {
-                                string id = juego.ID;
-                                bool añadir = true;
+                                foreach (SteamJuegosAPIJuego juego in json.Datos.Juegos)
+                                {
+                                    string id = juego.ID;
+                                    bool añadir = true;
 
-                                if (juegos.Count > 0)
-                                {                                  
-                                    int k = 0;
-                                    while (k < juegos.Count)
+                                    if (juegos.Count > 0)
                                     {
-                                        if (juegos[k].ID == juego.ID)
+                                        int k = 0;
+                                        while (k < juegos.Count)
                                         {
-                                            añadir = false;
-                                        }
+                                            if (juegos[k].ID == juego.ID)
+                                            {
+                                                añadir = false;
+                                            }
 
-                                        k += 1;
+                                            k += 1;
+                                        }
+                                    }
+
+                                    if (añadir == true)
+                                    {
+                                        SteamJuego juegoAñadir = new SteamJuego
+                                        {
+                                            ID = juego.ID,
+                                            Titulo = juego.Titulo,
+                                            Imagen = dominioImagen + "/steam/apps/" + juego.ID + "/library_600x900.jpg",
+                                            Icono = dominioIcono + "/steamcommunity/public/images/apps/" + juego.ID + "/" + juego.Icono + ".jpg",
+                                            Escaneado = false
+                                        };
+
+                                        juegos.Add(juegoAñadir);
                                     }
                                 }
-
-                                if (añadir == true)
-                                {
-                                    SteamJuego juegoAñadir = new SteamJuego
-                                    {
-                                        ID = juego.ID,
-                                        Titulo = juego.Titulo,
-                                        Imagen = dominioImagen + "/steam/apps/" + juego.ID + "/library_600x900.jpg",
-                                        Icono = dominioIcono + "/steamcommunity/public/images/apps/" + juego.ID + "/" + juego.Icono + ".jpg",
-                                        Escaneado = false
-                                    };
-
-                                    juegos.Add(juegoAñadir);
-                                }
                             }
-                        }
+                        }       
                     }
                 }
-
+               
                 if (juegos.Count > 0)
                 {
-                    Logros.ComprobarCarpetaUsuario(cuenta.ID64);
-
                     juegos.Sort(delegate (SteamJuego c1, SteamJuego c2) { return c1.Titulo.CompareTo(c2.Titulo); });
 
+                    SteamCuentayJuegos cuentayJuegos = new SteamCuentayJuegos
+                    {
+                        Cuenta = cuenta,
+                        Juegos = juegos,
+                        JuegosComprobados = 50
+                    };
+
+                    ObjetosVentana.gvJuegos.Tag = cuentayJuegos;
+
+                    int i = 0;
                     foreach (SteamJuego juego in juegos)
                     {
-
-
-                        ImageEx imagen = new ImageEx
+                        if (i < 50)
                         {
-                            Source = juego.Imagen,
-                            IsCacheEnabled = true,
-                            EnableLazyLoading = true,
-                            CornerRadius = new CornerRadius(5)
-                        };
+                            SteamCuentayJuego cuentayJuego = new SteamCuentayJuego
+                            {
+                                Cuenta = cuenta,
+                                Juego = juego
+                            };
 
-                        ObjetosVentana.gvJuegos.Items.Add(imagen);
+                            Image imagen = new Image
+                            {
+                                Source = new BitmapImage(new Uri(juego.Imagen)),
+                                Stretch = Stretch.UniformToFill,
+                                HorizontalAlignment = HorizontalAlignment.Stretch,
+                                VerticalAlignment = VerticalAlignment.Stretch,
+                                Tag = cuentayJuego,
+                                MinWidth = 200,
+                                MinHeight = 300
+                            };
+
+                            imagen.ImageOpened += ImagenCarga;
+
+                            Button2 botonJuego = new Button2
+                            {
+                                Content = imagen,
+                                Tag = cuentayJuego,
+                                Padding = new Thickness(5),
+                                Background = new SolidColorBrush(Colors.Transparent)
+                            };
+
+                            ObjetosVentana.gvJuegos.Items.Add(botonJuego);
+                        }
+
+                        i += 1;
+                        
+
+
+                        //--------------------------------------------------------
+
+                        //juego.Logros = logros;
+                        //juego.Escaneado = true;
+
+                        //StorageFolder carpetaJugador = await StorageFolder.GetFolderFromPathAsync(ApplicationData.Current.LocalFolder.Path + "\\" + cuenta.ID64);
+                        //StorageFile ficheroJuego = null;
+
+                        //try
+                        //{
+                        //    ficheroJuego = await carpetaJugador.GetFileAsync(juego.ID + ".json");
+                        //}
+                        //catch
+                        //{
+                        //    ficheroJuego = await carpetaJugador.CreateFileAsync(juego.ID + ".json");
+                        //}
+
+                        //string textoLogros = JsonConvert.SerializeObject(juego, Formatting.Indented);
+                        //await FileIO.WriteTextAsync(ficheroJuego, textoLogros);
                     }
                 }
             }
 
             ObjetosVentana.prJuegos.Visibility = Visibility.Collapsed;
         }
+
+        public static void CargarMasJuegos(object sender, ScrollViewerViewChangingEventArgs e)
+        {
+            SteamCuentayJuegos cuentayJuegos = ObjetosVentana.gvJuegos.Tag as SteamCuentayJuegos;
+            List<SteamJuego> juegos = cuentayJuegos.Juegos;
+
+            int i = cuentayJuegos.JuegosComprobados;
+            foreach (SteamJuego juego in juegos)
+            {
+                if (i < cuentayJuegos.JuegosComprobados + 50)
+                {
+                    SteamCuentayJuego cuentayJuego = new SteamCuentayJuego
+                    {
+                        Cuenta = cuentayJuegos.Cuenta,
+                        Juego = juego
+                    };
+
+                    Image imagen = new Image
+                    {
+                        Source = new BitmapImage(new Uri(juego.Imagen)),
+                        Stretch = Stretch.UniformToFill,
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        VerticalAlignment = VerticalAlignment.Stretch,
+                        Tag = cuentayJuego,
+                        MinWidth = 200,
+                        MinHeight = 300
+                    };
+
+                    imagen.ImageOpened += ImagenCarga;
+
+                    Button2 botonJuego = new Button2
+                    {
+                        Content = imagen,
+                        Tag = cuentayJuego,
+                        Padding = new Thickness(5),
+                        Background = new SolidColorBrush(Colors.Transparent)
+                    };
+
+                    ObjetosVentana.gvJuegos.Items.Add(botonJuego);
+                }
+
+                i += 1;
+            }
+        }
+
+        public static async void ImagenCarga(object sender, RoutedEventArgs e)
+        {
+            Image imagen = sender as Image;
+            SteamCuentayJuego cuentayJuego = imagen.Tag as SteamCuentayJuego;
+
+            List<Logro> logros = await Logros.ComprobarJuego(cuentayJuego.Cuenta.ID64, cuentayJuego.Juego.ID);
+       
+            if (logros.Count == 0)
+            {
+                foreach (Button2 botonJuego in ObjetosVentana.gvJuegos.Items)
+                {
+                    SteamCuentayJuego juegoGv = botonJuego.Tag as SteamCuentayJuego;
+
+                    if (juegoGv.Juego.ID == cuentayJuego.Juego.ID)
+                    {
+                        ObjetosVentana.gvJuegos.Items.Remove(botonJuego);
+                    }
+                }        
+            }
+        }
+    }
+
+    //----------------------------------------------
+
+    public class SteamCuentayJuegos
+    {
+        public SteamCuenta Cuenta { get; set; }
+        public List<SteamJuego> Juegos { get; set; }
+        public int JuegosComprobados { get; set; }
+    }
+
+    public class SteamCuentayJuego
+    {
+        public SteamCuenta Cuenta { get; set; }
+        public SteamJuego Juego { get; set; }
     }
 
     //----------------------------------------------
