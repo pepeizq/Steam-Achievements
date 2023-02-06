@@ -402,7 +402,7 @@ namespace Steam
                         Tag = cuenta
                     };
 
-                    boton1.Click += Juegos.Cargar;
+                    boton1.Click += Juegos.CargarLista;
                     boton1.PointerEntered += Animaciones.EntraRatonBoton2;
                     boton1.PointerExited += Animaciones.SaleRatonBoton2;
 

@@ -13,31 +13,31 @@ namespace Steam
         {
             List<Logro> logros = new List<Logro>();
 
-            //StorageFolder carpetaJugador = await StorageFolder.GetFolderFromPathAsync(ApplicationData.Current.LocalFolder.Path + "\\" + idJugador);
-            //StorageFile ficheroJuego = null;
+            StorageFolder carpetaJugador = await StorageFolder.GetFolderFromPathAsync(ApplicationData.Current.LocalFolder.Path + "\\" + idJugador);
+            StorageFile ficheroJuego = null;
 
-            //try
-            //{
-            //    ficheroJuego = await carpetaJugador.GetFileAsync(idJuego + ".json");
-            //}
-            //catch { }
+            try
+            {
+                ficheroJuego = await carpetaJugador.GetFileAsync(idJuego + ".json");
+            }
+            catch { }
 
-            //if (ficheroJuego != null)
-            //{
-            //    string contenidoJuego = await FileIO.ReadTextAsync(ficheroJuego);
+            if (ficheroJuego != null)
+            {
+                string contenidoJuego = await FileIO.ReadTextAsync(ficheroJuego);
 
-            //    if (contenidoJuego != string.Empty)
-            //    {
-            //        SteamJuego juego = JsonConvert.DeserializeObject<SteamJuego>(contenidoJuego);
+                if (contenidoJuego != string.Empty)
+                {
+                    SteamJuego juego = JsonConvert.DeserializeObject<SteamJuego>(contenidoJuego);
 
-            //        logros = juego.Logros;
+                    logros = juego.Logros;
 
-            //        if (logros == null)
-            //        {
-            //            logros = new List<Logro>();
-            //        }
-            //    }
-            //}
+                    if (logros == null)
+                    {
+                        logros = new List<Logro>();
+                    }
+                }
+            }
 
             if (logros.Count == 0)
             {

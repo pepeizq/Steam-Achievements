@@ -74,6 +74,10 @@
             </NavigationView.MenuItems>
 
             <NavigationView.FooterMenuItems>
+                <StackPanel x:Name="spJuegosBuscador" Orientation="Horizontal" Visibility="Collapsed">
+                    <iconos:FontAwesome Icon="Solid_MagnifyingGlass" Foreground="{StaticResource ColorFuente}" Margin="0,0,20,0"/>
+                    <TextBox x:Name="tbJuegosBuscador" MinWidth="300" RequestedTheme="Dark"/>
+                </StackPanel>
                 <interfaz:NavigationViewItem2 x:Name="nvItemSubirArriba" Visibility="Collapsed">
                     <Grid Height="28" Width="28" Padding="1" CornerRadius="3">
                         <iconos:FontAwesome Icon="Solid_AngleUp" Foreground="{StaticResource ColorFuente}" FontSize="19"/>
@@ -180,6 +184,8 @@
                             <ProgressRing x:Name="prJuegos" IsIndeterminate="True" Foreground="{StaticResource ColorFuente}" VerticalAlignment="Center" HorizontalAlignment="Left" Visibility="Collapsed" Margin="30"/>
 
                             <controls:AdaptiveGridView x:Name="gvJuegos" DesiredWidth="200" StretchContentForSingleRow="False"/>
+
+                            <TeachingTip x:Name="tTipJuegos" IsOpen="False" RequestedTheme="Dark"/>
                         </StackPanel>
                     </ScrollViewer>
                 </Grid>

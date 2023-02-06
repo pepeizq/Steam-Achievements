@@ -21,7 +21,7 @@ namespace Steam_Achievements_WinUI
             Interfaz.Menu.Cargar();
             Opciones.CargarDatos();
             Steam.Cuentas.Cargar();
-            Steam.Juegos.CargarSv();
+            Steam.Juegos.Cargar();
         }
 
         public void CargarObjetosVentana()
@@ -60,9 +60,12 @@ namespace Steam_Achievements_WinUI
 
             //-------------------------------------------------------------------
 
+            ObjetosVentana.spJuegosBuscador = spJuegosBuscador;
+            ObjetosVentana.tbJuegosBuscador = tbJuegosBuscador;
             ObjetosVentana.svJuegos = svJuegos;
             ObjetosVentana.prJuegos = prJuegos;
             ObjetosVentana.gvJuegos = gvJuegos;
+            ObjetosVentana.tTipJuegos = tTipJuegos;
 
             //-------------------------------------------------------------------
 
@@ -108,9 +111,12 @@ namespace Steam_Achievements_WinUI
 
             //-------------------------------------------------------------------
 
+            public static StackPanel spJuegosBuscador { get; set; }
+            public static TextBox tbJuegosBuscador { get; set; }
             public static ScrollViewer svJuegos { get; set; }
             public static ProgressRing prJuegos { get; set; }
             public static AdaptiveGridView gvJuegos { get; set; }
+            public static TeachingTip tTipJuegos { get; set; }
 
             //-------------------------------------------------------------------
 
@@ -182,13 +188,15 @@ namespace Steam_Achievements_WinUI
                                     }          
                                 }
                             }
+
+                            ObjetosVentana.spJuegosBuscador.Visibility = Visibility.Collapsed;
                         }
                         else if (numero == 3)
                         {
                             Pestañas.Visibilidad(gridJuegos);
                             BarraTitulo.CambiarTitulo(null);
 
-
+                            ObjetosVentana.spJuegosBuscador.Visibility = Visibility.Visible;
                         }
                     }
                 }
