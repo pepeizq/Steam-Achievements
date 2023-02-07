@@ -15,6 +15,7 @@ namespace Interfaz
             ObjetosVentana.nvItemSubirArriba.PointerExited += Animaciones.SaleRatonNvItem2;
 
             ObjetosVentana.svJuegos.ViewChanging += svScroll;
+            ObjetosVentana.svLogros.ViewChanging += svScroll;
             ObjetosVentana.svOpciones.ViewChanging += svScroll;
         }
 
@@ -43,6 +44,10 @@ namespace Interfaz
             if (ObjetosVentana.gridJuegos.Visibility == Visibility.Visible)
             {
                 ObjetosVentana.svJuegos.ChangeView(null, 0, null);
+            }
+            else if (ObjetosVentana.gridLogros.Visibility == Visibility.Visible)
+            {
+                ObjetosVentana.svLogros.ChangeView(null, 0, null);
             }
             else if (ObjetosVentana.gridOpciones.Visibility == Visibility.Visible)
             {

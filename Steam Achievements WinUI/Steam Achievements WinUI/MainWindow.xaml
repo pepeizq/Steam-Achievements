@@ -184,6 +184,7 @@
                             <ProgressRing x:Name="prJuegos" IsIndeterminate="True" Foreground="{StaticResource ColorFuente}" VerticalAlignment="Center" HorizontalAlignment="Left" Visibility="Collapsed" Margin="30"/>
 
                             <controls:AdaptiveGridView x:Name="gvJuegos" DesiredWidth="200" StretchContentForSingleRow="False"/>
+                            <controls:AdaptiveGridView x:Name="gvJuegosBuscador" DesiredWidth="200" StretchContentForSingleRow="False" Visibility="Collapsed"/>
 
                             <TeachingTip x:Name="tTipJuegos" IsOpen="False" RequestedTheme="Dark"/>
                         </StackPanel>
@@ -191,7 +192,61 @@
                 </Grid>
 
                 <Grid x:Name="gridLogros" Visibility="Collapsed">
+                    <ScrollViewer x:Name="svLogros" VerticalScrollBarVisibility="Visible" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel x:Name="spLogrosCabecera" MaxHeight="620" MaxWidth="1920">
+                                <Image x:Name="imagenLogrosCabecera" Stretch="Uniform" MaxHeight="150" MaxWidth="600" Margin="50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </StackPanel>
 
+                            <StackPanel Orientation="Vertical" Padding="20">
+                                <Expander x:Name="expanderLogrosCompletados" IsExpanded="True" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" RequestedTheme="Dark" CornerRadius="5" Margin="0,0,0,40">
+                                    <Expander.Header>
+                                        <Grid Margin="10,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock x:Uid="AchievementsCompleted" Grid.Column="0" Foreground="{StaticResource ColorFuente}"/>
+                                            <TextBlock x:Name="tbLogrosCompletadosInfo" Grid.Column="2" Foreground="{StaticResource ColorFuente}"/>
+                                        </Grid>
+                                    </Expander.Header>
+
+                                    <Expander.Background>
+                                        <SolidColorBrush Color="{StaticResource ColorPrimario}" Opacity="0.6"/>
+                                    </Expander.Background>
+
+                                    <StackPanel x:Name="spLogrosCompletados" Orientation="Vertical" Padding="10">
+
+                                    </StackPanel>
+                                </Expander>
+
+                                <Expander x:Name="expanderLogrosPendientes" IsExpanded="True" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" RequestedTheme="Dark" CornerRadius="5">
+                                    <Expander.Header>
+                                        <Grid Margin="10,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <TextBlock x:Uid="AchievementsUncompleted" Grid.Column="0" Foreground="{StaticResource ColorFuente}"/>
+                                            <TextBlock x:Name="tbLogrosPendientesInfo" Grid.Column="2" Foreground="{StaticResource ColorFuente}"/>
+                                        </Grid>
+                                    </Expander.Header>
+
+                                    <Expander.Background>
+                                        <SolidColorBrush Color="{StaticResource ColorPrimario}" Opacity="0.6"/>
+                                    </Expander.Background>
+
+                                    <StackPanel x:Name="spLogrosPendientes" Orientation="Vertical" Padding="10">
+
+                                    </StackPanel>
+                                </Expander>
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
                 </Grid>
 
                 <Grid x:Name="gridOpciones" Visibility="Collapsed">

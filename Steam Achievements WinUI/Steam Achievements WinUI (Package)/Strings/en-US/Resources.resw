@@ -123,6 +123,12 @@
   <data name="Accounts" xml:space="preserve">
     <value>Accounts</value>
   </data>
+  <data name="AchievementsCompleted.Text" xml:space="preserve">
+    <value>Achievements Completed</value>
+  </data>
+  <data name="AchievementsUncompleted.Text" xml:space="preserve">
+    <value>Achievements Uncompleted</value>
+  </data>
   <data name="AddAccount.Text" xml:space="preserve">
     <value>Add a link to the Steam Community account:</value>
   </data>
@@ -167,6 +173,9 @@
   </data>
   <data name="No.Text" xml:space="preserve">
     <value>No</value>
+  </data>
+  <data name="NoGames" xml:space="preserve">
+    <value>No games with achievements detected</value>
   </data>
   <data name="Options" xml:space="preserve">
     <value>Options</value>

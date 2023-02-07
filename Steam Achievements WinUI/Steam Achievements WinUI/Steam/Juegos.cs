@@ -1,8 +1,10 @@
-﻿using Herramientas;
+﻿using CommunityToolkit.WinUI.UI.Controls;
+using Herramientas;
 using Interfaz;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.Windows.ApplicationModel.Resources;
@@ -18,8 +20,8 @@ namespace Steam
 {
     public static class Juegos
     {
-        private static string dominioImagen = "https://cdn.cloudflare.steamstatic.com";
-        private static string dominioIcono = "https://steamcdn-a.akamaihd.net";
+        public static string dominioImagen = "https://cdn.cloudflare.steamstatic.com";
+        public static string dominioIcono = "https://steamcdn-a.akamaihd.net";
 
         public static void Cargar()
         {
@@ -30,12 +32,14 @@ namespace Steam
         public static async void BuscadorBuscaAsync(object sender, TextChangedEventArgs e)
         {
             await Task.Yield();
-
+           
             TextBox tb = sender as TextBox;
 
             if (tb.Text.Trim().Length > 3)
             {
                 tb.IsEnabled = false;
+                ObjetosVentana.gvJuegosBuscador.Visibility = Visibility.Visible;
+                ObjetosVentana.gvJuegos.Visibility = Visibility.Collapsed;
 
                 SteamCuentayJuegos cuentayJuegos = ObjetosVentana.gvJuegos.Tag as SteamCuentayJuegos;
                 List<SteamJuego> resultados = new List<SteamJuego>();
@@ -52,15 +56,15 @@ namespace Steam
                 {
                     resultados.Sort(delegate (SteamJuego c1, SteamJuego c2) { return c1.Titulo.CompareTo(c2.Titulo); });
 
-                    ObjetosVentana.gvJuegos.Items.Clear();
+                    ObjetosVentana.gvJuegosBuscador.Items.Clear();
 
                     foreach (SteamJuego juego in resultados)
                     {
                         bool añadir = true;
 
-                        if (ObjetosVentana.gvJuegos.Items.Count > 0)
+                        if (ObjetosVentana.gvJuegosBuscador.Items.Count > 0)
                         {
-                            foreach (Button2 boton in ObjetosVentana.gvJuegos.Items)
+                            foreach (Button2 boton in ObjetosVentana.gvJuegosBuscador.Items)
                             {
                                 SteamCuentayJuego cuentayJuego = boton.Tag as SteamCuentayJuego;
 
@@ -74,7 +78,7 @@ namespace Steam
 
                         if (añadir == true)
                         {
-                            ObjetosVentana.gvJuegos.Items.Add(await BotonEstilo(cuentayJuegos.Cuenta, juego));
+                            ObjetosVentana.gvJuegosBuscador.Items.Add(await BotonEstilo(cuentayJuegos.Cuenta, juego, true));
                         }                        
                     }
                 }
@@ -83,7 +87,8 @@ namespace Steam
             }
             else
             {
-
+                ObjetosVentana.gvJuegosBuscador.Visibility = Visibility.Collapsed;
+                ObjetosVentana.gvJuegos.Visibility = Visibility.Visible;
             }
         }
 
@@ -190,9 +195,9 @@ namespace Steam
                     ObjetosVentana.gvJuegos.Tag = cuentayJuegos;
 
                     int i = 0;
-                    while (i < 100)
+                    while (i < 100 && i < juegos.Count)
                     {
-                        ObjetosVentana.gvJuegos.Items.Add(await BotonEstilo(cuenta, juegos[i]));
+                        ObjetosVentana.gvJuegos.Items.Add(await BotonEstilo(cuenta, juegos[i], false));
                         i += 1;
                     }                
                 }
@@ -204,7 +209,7 @@ namespace Steam
 
         public static async void CargarMasJuegos(object sender, ScrollViewerViewChangingEventArgs e)
         {
-            if (ObjetosVentana.tbJuegosBuscador.Text.Length < 4)
+            if (ObjetosVentana.tbJuegosBuscador.Text.Length < 4 || ObjetosVentana.gvJuegos.Items.Count > 0)
             {
                 ScrollViewer sv = sender as ScrollViewer;
 
@@ -220,7 +225,7 @@ namespace Steam
 
                     int i = cuentayJuegos.JuegosComprobados;
 
-                    while (i < cuentayJuegos.JuegosComprobados + 100)
+                    while (i < cuentayJuegos.JuegosComprobados + 100 && i < juegos.Count)
                     {
                         bool añadir = true;
 
@@ -240,7 +245,7 @@ namespace Steam
 
                         if (añadir == true)
                         {
-                            ObjetosVentana.gvJuegos.Items.Add(await BotonEstilo(cuentayJuegos.Cuenta, juegos[i]));
+                            ObjetosVentana.gvJuegos.Items.Add(await BotonEstilo(cuentayJuegos.Cuenta, juegos[i], false));
                         }
 
                         i += 1;
@@ -254,7 +259,7 @@ namespace Steam
             }   
         }
 
-        public static async Task<Button2> BotonEstilo(SteamCuenta cuenta, SteamJuego juego)
+        public static async Task<Button2> BotonEstilo(SteamCuenta cuenta, SteamJuego juego, bool buscador)
         {
             if (juego != null)
             {
@@ -264,10 +269,13 @@ namespace Steam
                     Juego = juego
                 };
 
-                await Task.Run(async () =>
+                if (buscador == false)
                 {
-                    juego = await LeerJuegoFichero(cuentayJuego);
-                });
+                    await Task.Run(async () =>
+                    {
+                        juego = await LeerJuegoFichero(cuentayJuego);
+                    });
+                }
 
                 if (juego != null)
                 {
@@ -326,8 +334,17 @@ namespace Steam
                             BorderThickness = new Thickness(0)
                         };
 
+                        botonJuego.Click += Logros.CargarJuego;
                         botonJuego.PointerEntered += Animaciones.EntraRatonBoton2;
                         botonJuego.PointerExited += Animaciones.SaleRatonBoton2;
+
+                        TextBlock tbTt = new TextBlock
+                        {
+                            Text = juego.Titulo
+                        };
+
+                        ToolTipService.SetToolTip(botonJuego, tbTt);
+                        ToolTipService.SetPlacement(botonJuego, PlacementMode.Bottom);
 
                         return botonJuego;
                     }                    
@@ -359,20 +376,50 @@ namespace Steam
 
             if (logros.Count == 0)
             {
-                foreach (Button2 botonJuego in ObjetosVentana.gvJuegos.Items)
+                AdaptiveGridView gvUsado = null;
+
+                if (ObjetosVentana.gvJuegos.Visibility == Visibility.Visible)
+                {
+                    gvUsado = ObjetosVentana.gvJuegos;
+                }
+                else if (ObjetosVentana.gvJuegosBuscador.Visibility == Visibility.Visible) 
+                {
+                    gvUsado = ObjetosVentana.gvJuegosBuscador;
+                }
+
+                foreach (Button2 botonJuego in gvUsado.Items)
                 {
                     SteamCuentayJuego juegoGv = botonJuego.Tag as SteamCuentayJuego;
 
                     if (juegoGv.Juego.ID == cuentayJuego.Juego.ID)
                     {
-                        ObjetosVentana.gvJuegos.Items.Remove(botonJuego);
+                        gvUsado.Items.Remove(botonJuego);
                         break;
                     }
-                }        
+                }
+
+                if (gvUsado.Items.Count == 0)
+                {
+                    ResourceLoader recursos = new ResourceLoader();
+
+                    ObjetosVentana.tTipJuegos.IsOpen = true;
+                    ObjetosVentana.tTipJuegos.Subtitle = recursos.GetString("NoGames");
+                }
             }
             else
             {
-                foreach (Button2 botonJuego in ObjetosVentana.gvJuegos.Items)
+                AdaptiveGridView gvUsado = null;
+
+                if (ObjetosVentana.gvJuegos.Visibility == Visibility.Visible)
+                {
+                    gvUsado = ObjetosVentana.gvJuegos;
+                }
+                else if (ObjetosVentana.gvJuegosBuscador.Visibility == Visibility.Visible)
+                {
+                    gvUsado = ObjetosVentana.gvJuegosBuscador;
+                }
+
+                foreach (Button2 botonJuego in gvUsado.Items)
                 {
                     SteamCuentayJuego juegoGv = botonJuego.Tag as SteamCuentayJuego;
 
@@ -391,7 +438,7 @@ namespace Steam
                             }
                         }
 
-                        tb.Text = contadorLogrosHechos.ToString() + "/" + logros.Count.ToString() + " • " + ((int)(100 / logros.Count * contadorLogrosHechos)).ToString() + "%";
+                        tb.Text = contadorLogrosHechos.ToString() + "/" + logros.Count.ToString() + " • " + ((int)Math.Round((double)(100 * contadorLogrosHechos / logros.Count))).ToString() + "%";
                     }
                 }
             }

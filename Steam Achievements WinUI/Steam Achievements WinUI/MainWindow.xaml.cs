@@ -3,6 +3,7 @@ using Interfaz;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Windows.ApplicationModel.Resources;
+using Expander = Microsoft.UI.Xaml.Controls.Expander;
 
 namespace Steam_Achievements_WinUI
 {
@@ -22,6 +23,7 @@ namespace Steam_Achievements_WinUI
             Opciones.CargarDatos();
             Steam.Cuentas.Cargar();
             Steam.Juegos.Cargar();
+            Steam.Logros.Cargar();
         }
 
         public void CargarObjetosVentana()
@@ -65,7 +67,20 @@ namespace Steam_Achievements_WinUI
             ObjetosVentana.svJuegos = svJuegos;
             ObjetosVentana.prJuegos = prJuegos;
             ObjetosVentana.gvJuegos = gvJuegos;
+            ObjetosVentana.gvJuegosBuscador = gvJuegosBuscador;
             ObjetosVentana.tTipJuegos = tTipJuegos;
+
+            //-------------------------------------------------------------------
+
+            ObjetosVentana.svLogros = svLogros;
+            ObjetosVentana.spLogrosCabecera = spLogrosCabecera;
+            ObjetosVentana.imagenLogrosCabecera = imagenLogrosCabecera;
+            ObjetosVentana.expanderLogrosCompletados = expanderLogrosCompletados;
+            ObjetosVentana.spLogrosCompletados = spLogrosCompletados;
+            ObjetosVentana.tbLogrosCompletadosInfo = tbLogrosCompletadosInfo;
+            ObjetosVentana.expanderLogrosPendientes = expanderLogrosPendientes;
+            ObjetosVentana.spLogrosPendientes = spLogrosPendientes;
+            ObjetosVentana.tbLogrosPendientesInfo = tbLogrosPendientesInfo;
 
             //-------------------------------------------------------------------
 
@@ -116,7 +131,20 @@ namespace Steam_Achievements_WinUI
             public static ScrollViewer svJuegos { get; set; }
             public static ProgressRing prJuegos { get; set; }
             public static AdaptiveGridView gvJuegos { get; set; }
+            public static AdaptiveGridView gvJuegosBuscador { get; set; }
             public static TeachingTip tTipJuegos { get; set; }
+
+            //-------------------------------------------------------------------
+
+            public static ScrollViewer svLogros { get; set; }
+            public static StackPanel spLogrosCabecera { get; set; }
+            public static Image imagenLogrosCabecera { get; set; }
+            public static Expander expanderLogrosCompletados { get; set; }
+            public static StackPanel spLogrosCompletados { get; set; }
+            public static TextBlock tbLogrosCompletadosInfo { get; set; }
+            public static Expander expanderLogrosPendientes { get; set; }
+            public static StackPanel spLogrosPendientes { get; set; }
+            public static TextBlock tbLogrosPendientesInfo { get; set; }
 
             //-------------------------------------------------------------------
 
@@ -131,9 +159,6 @@ namespace Steam_Achievements_WinUI
             ResourceLoader recursos = new ResourceLoader();
    
             Pestañas.CreadorItems(null, recursos.GetString("Accounts"), 1);
-
-            //StackPanel sp = (StackPanel)ObjetosVentana.nvPrincipal.MenuItems[1];
-            //Pestañas.Visibilidad(gridSkins, true, sp, true);
         }
 
         private void nvPrincipal_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
@@ -194,6 +219,28 @@ namespace Steam_Achievements_WinUI
                         else if (numero == 3)
                         {
                             Pestañas.Visibilidad(gridJuegos);
+                            BarraTitulo.CambiarTitulo(null);
+
+                            if (ObjetosVentana.nvPrincipal.MenuItems.Count > 2)
+                            {
+                                int i = ObjetosVentana.nvPrincipal.MenuItems.Count;
+                                int j = 0;
+                                while (i > j)
+                                {
+                                    i -= 1;
+
+                                    if (i > 3)
+                                    {
+                                        ObjetosVentana.nvPrincipal.MenuItems.RemoveAt(i);
+                                    }
+                                }
+                            }
+
+                            ObjetosVentana.spJuegosBuscador.Visibility = Visibility.Visible;
+                        }
+                        else if (numero == 5)
+                        {
+                            Pestañas.Visibilidad(gridLogros);
                             BarraTitulo.CambiarTitulo(null);
 
                             ObjetosVentana.spJuegosBuscador.Visibility = Visibility.Visible;

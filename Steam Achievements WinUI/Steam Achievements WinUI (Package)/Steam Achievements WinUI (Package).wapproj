@@ -56,7 +56,7 @@
     <Content Include="Images\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Images\StoreLogo.png" />
     <Content Include="Images\Wide310x150Logo.scale-200.png" />
-    <PRIResource Include="Strings\en-US\Resources.resw"/>
+    <PRIResource Include="Strings\en-US\Resources.resw" />
     <PRIResource Include="Strings\es-ES\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +76,8 @@
       <IncludeAssets>build</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="VideoLibrary" Version="3.2.3" />
+    <PackageReference Include="YoutubeExplode" Version="6.2.5" />
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
 </Project>

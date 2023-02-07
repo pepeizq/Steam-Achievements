@@ -123,6 +123,12 @@
   <data name="Accounts" xml:space="preserve">
     <value>Cuentas</value>
   </data>
+  <data name="AchievementsCompleted.Text" xml:space="preserve">
+    <value>Logros Completados</value>
+  </data>
+  <data name="AchievementsUncompleted.Text" xml:space="preserve">
+    <value>Logros Pendientes</value>
+  </data>
   <data name="AddAccount.Text" xml:space="preserve">
     <value>Añade un enlace a la cuenta de Steam Community:</value>
   </data>
@@ -167,6 +173,9 @@
   </data>
   <data name="No.Text" xml:space="preserve">
     <value>No</value>
+  </data>
+  <data name="NoGames" xml:space="preserve">
+    <value>No se han detectado juegos con logros</value>
   </data>
   <data name="Options" xml:space="preserve">
     <value>Opciones</value>
