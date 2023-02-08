@@ -75,12 +75,16 @@ namespace Steam_Achievements_WinUI
             ObjetosVentana.svLogros = svLogros;
             ObjetosVentana.spLogrosCabecera = spLogrosCabecera;
             ObjetosVentana.imagenLogrosCabecera = imagenLogrosCabecera;
+            ObjetosVentana.gridLogrosTrialMensaje = gridLogrosTrialMensaje;
+            ObjetosVentana.botonLogrosTrialComprarApp = botonLogrosTrialComprarApp;
+            ObjetosVentana.botonLogrosGuiasSteam = botonLogrosGuiasSteam;
             ObjetosVentana.expanderLogrosCompletados = expanderLogrosCompletados;
             ObjetosVentana.spLogrosCompletados = spLogrosCompletados;
             ObjetosVentana.tbLogrosCompletadosInfo = tbLogrosCompletadosInfo;
             ObjetosVentana.expanderLogrosPendientes = expanderLogrosPendientes;
             ObjetosVentana.spLogrosPendientes = spLogrosPendientes;
             ObjetosVentana.tbLogrosPendientesInfo = tbLogrosPendientesInfo;
+            ObjetosVentana.tTipLogros = tTipLogros;
 
             //-------------------------------------------------------------------
 
@@ -139,12 +143,16 @@ namespace Steam_Achievements_WinUI
             public static ScrollViewer svLogros { get; set; }
             public static StackPanel spLogrosCabecera { get; set; }
             public static Image imagenLogrosCabecera { get; set; }
+            public static Grid gridLogrosTrialMensaje { get; set; }
+            public static Button botonLogrosTrialComprarApp { get; set; }
+            public static Button botonLogrosGuiasSteam { get; set; }
             public static Expander expanderLogrosCompletados { get; set; }
             public static StackPanel spLogrosCompletados { get; set; }
             public static TextBlock tbLogrosCompletadosInfo { get; set; }
             public static Expander expanderLogrosPendientes { get; set; }
             public static StackPanel spLogrosPendientes { get; set; }
             public static TextBlock tbLogrosPendientesInfo { get; set; }
+            public static TeachingTip tTipLogros { get; set; }
 
             //-------------------------------------------------------------------
 
@@ -243,7 +251,7 @@ namespace Steam_Achievements_WinUI
                             Pestañas.Visibilidad(gridLogros);
                             BarraTitulo.CambiarTitulo(null);
 
-                            ObjetosVentana.spJuegosBuscador.Visibility = Visibility.Visible;
+                            ObjetosVentana.spJuegosBuscador.Visibility = Visibility.Collapsed;
                         }
                     }
                 }

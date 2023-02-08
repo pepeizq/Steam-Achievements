@@ -177,6 +177,9 @@
   <data name="NoGames" xml:space="preserve">
     <value>No games with achievements detected</value>
   </data>
+  <data name="OpenVideoYoutube" xml:space="preserve">
+    <value>Open video in browser</value>
+  </data>
   <data name="Options" xml:space="preserve">
     <value>Options</value>
   </data>
@@ -206,6 +209,24 @@
   </data>
   <data name="OptionsLanguageInfo.Text" xml:space="preserve">
     <value>Select the language of the application, a restart is necessary in the application to make the change.</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search on:</value>
+  </data>
+  <data name="SearchingYoutube" xml:space="preserve">
+    <value>Searching video on YouTube</value>
+  </data>
+  <data name="SteamGuides.Text" xml:space="preserve">
+    <value>Guides on Steam</value>
+  </data>
+  <data name="TrialMessage.Text" xml:space="preserve">
+    <value>You are using a Trial version of the app, several functions are disabled.</value>
+  </data>
+  <data name="TrialMessageBuyApp.Text" xml:space="preserve">
+    <value>Buy App</value>
+  </data>
+  <data name="VideoYoutube" xml:space="preserve">
+    <value>Video on YouTube</value>
   </data>
   <data name="Yes.Text" xml:space="preserve">
     <value>Yes</value>

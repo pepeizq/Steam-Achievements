@@ -3,18 +3,20 @@
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
-  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
-  IgnorableNamespaces="uap rescap">
+  xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
+  IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="ee7bebae-8761-4f58-989d-03864a0f4d7d"
-    Publisher="CN=pepei"
-    Version="1.0.0.0" />
+	Name="12041pepeizq.pepeizqsAchievementsforGames"
+	Publisher="CN=E6A59F16-60E0-4B88-A8A1-993C16A63CD0"
+	Version="1.0.0.0"/>
+	
+  <mp:PhoneIdentity PhoneProductId="E6A59F16-60E0-4B88-A8A1-993C16A63CD0" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>Steam Achievements WinUI (Package)</DisplayName>
-    <PublisherDisplayName>pepei</PublisherDisplayName>
-    <Logo>Images\StoreLogo.png</Logo>
+    <DisplayName>pepeizq&apos;s Achievements for Games</DisplayName>
+    <PublisherDisplayName>pepeizq</PublisherDisplayName>
+    <Logo>Images\Logos\StoreLogo.png</Logo>
   </Properties>
 
   <Dependencies>
@@ -31,18 +33,18 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="Steam Achievements WinUI (Package)"
-        Description="Steam Achievements WinUI (Package)"
-        BackgroundColor="transparent"
-        Square150x150Logo="Images\Square150x150Logo.png"
-        Square44x44Logo="Images\Square44x44Logo.png">
-        <uap:DefaultTile Wide310x150Logo="Images\Wide310x150Logo.png" />
-        <uap:SplashScreen Image="Images\SplashScreen.png" />
+        DisplayName="pepeizq&apos;s Achievements for Games"
+        Description="https://pepeizqapps.com/"
+        BackgroundColor="#161616"
+        Square150x150Logo="Images\Logos\Square150x150Logo.png"
+        Square44x44Logo="Images\Logos\Square44x44Logo.png">
+        <uap:DefaultTile Wide310x150Logo="Images\Logos\Wide310x150Logo.png"  Square71x71Logo="Images\Logos\SmallTile.png" Square310x310Logo="Images\Logos\LargeTile.png"/>
+        <uap:SplashScreen Image="Images\Logos\SplashScreen.png"  BackgroundColor="#161616"/>
       </uap:VisualElements>
     </Application>
   </Applications>
 
   <Capabilities>
-    <rescap:Capability Name="runFullTrust" />
+    <Capability Name="internetClient"/>
   </Capabilities>
 </Package>

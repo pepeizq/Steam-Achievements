@@ -1,5 +1,8 @@
-﻿using Herramientas;
+﻿using FontAwesome6;
+using FontAwesome6.Fonts;
+using Herramientas;
 using Interfaz;
+using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -9,9 +12,10 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using VideoLibrary;
 using Windows.Media.Core;
-using Windows.Media.Playback;
 using Windows.Storage;
+using Windows.System;
 using Windows.UI;
 using YoutubeExplode;
 using YoutubeExplode.Common;
@@ -22,9 +26,29 @@ namespace Steam
 {
     public static class Logros
     {
-        public static void Cargar()
+        public static async void Cargar()
         {
             ObjetosVentana.imagenLogrosCabecera.ImageFailed += CabeceraImagenFalla;
+
+            bool trial = await Trial.Detectar();
+
+            if (trial == true)
+            {
+                ObjetosVentana.botonLogrosTrialComprarApp.Click += Trial.BotonAbrirCompra;
+                ObjetosVentana.botonLogrosTrialComprarApp.PointerEntered += Animaciones.EntraRatonBoton2;
+                ObjetosVentana.botonLogrosTrialComprarApp.PointerExited += Animaciones.SaleRatonBoton2;
+            }
+
+            ObjetosVentana.botonLogrosGuiasSteam.Click += AbrirGuiaJuego;
+            ObjetosVentana.botonLogrosGuiasSteam.PointerEntered += Animaciones.EntraRatonBoton2;
+            ObjetosVentana.botonLogrosGuiasSteam.PointerExited += Animaciones.SaleRatonBoton2;
+        }
+
+        public static async void AbrirGuiaJuego(object sender, RoutedEventArgs e)
+        {
+            string id = ObjetosVentana.botonLogrosGuiasSteam.Tag as string;
+
+            await Launcher.LaunchUriAsync(new Uri("https://steamcommunity.com/app/" + id + "/guides/?browsefilter=trend&requiredtags%5B%5D=Achievements"));
         }
 
         public static async Task<List<Logro>> ComprobarJuego(string idJugador, string idJuego)
@@ -190,6 +214,8 @@ namespace Steam
                 }
             }
 
+            ObjetosVentana.botonLogrosGuiasSteam.Tag = idJuego;
+
             if (logros.Count > 0)
             {
                 List<Logro> logrosCompletados = new List<Logro>();
@@ -207,6 +233,17 @@ namespace Steam
                     }
                 }
 
+                bool trial = await Trial.Detectar();
+
+                if (trial == true)
+                {
+                    ObjetosVentana.gridLogrosTrialMensaje.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    ObjetosVentana.gridLogrosTrialMensaje.Visibility = Visibility.Collapsed;
+                }
+
                 if (logrosCompletados.Count == 0)
                 {
                     ObjetosVentana.expanderLogrosCompletados.Visibility = Visibility.Collapsed;
@@ -219,9 +256,19 @@ namespace Steam
 
                     ObjetosVentana.spLogrosCompletados.Children.Clear();
 
+                    int i = 0;
                     foreach (Logro logro in logrosCompletados)
-                    {
-                        ObjetosVentana.spLogrosCompletados.Children.Add(LogroEstilo(cuentayJuego.Juego, logro));
+                    {                        
+                        if (i == 0)
+                        {
+                            ObjetosVentana.spLogrosCompletados.Children.Add(LogroEstilo(cuentayJuego.Juego, logro, true, trial));
+                        }
+                        else
+                        {
+                            ObjetosVentana.spLogrosCompletados.Children.Add(LogroEstilo(cuentayJuego.Juego, logro, false, trial));
+                        }
+
+                        i += 1;
                     }
                 }
 
@@ -239,9 +286,19 @@ namespace Steam
 
                     ObjetosVentana.spLogrosPendientes.Children.Clear();
 
+                    int i = 0;
                     foreach (Logro logro in logrosPendientes)
                     {
-                        ObjetosVentana.spLogrosPendientes.Children.Add(LogroEstilo(cuentayJuego.Juego, logro));
+                        if (i == 0)
+                        {
+                            ObjetosVentana.spLogrosPendientes.Children.Add(LogroEstilo(cuentayJuego.Juego, logro, true, trial));
+                        }
+                        else
+                        {
+                            ObjetosVentana.spLogrosPendientes.Children.Add(LogroEstilo(cuentayJuego.Juego, logro, false, trial));
+                        }
+                        
+                        i += 1;
                     }
                 }
             }
@@ -256,7 +313,7 @@ namespace Steam
             imagen.Margin = new Thickness(10);
         }
 
-        public static Grid LogroEstilo(SteamJuego juego, Logro logro)
+        public static Grid LogroEstilo(SteamJuego juego, Logro logro, bool primero, bool trial)
         {
             SteamJuegoyLogro juegoyLogro = new SteamJuegoyLogro
             {
@@ -267,8 +324,16 @@ namespace Steam
             Grid grid = new Grid
             {
                 VerticalAlignment = VerticalAlignment.Top,
-                Padding = new Thickness(5)
+                Padding = new Thickness(10)
             };
+
+            if (primero == false)
+            {
+                grid.Margin = new Thickness(0, 10, 0, 0);
+                grid.BorderBrush = new SolidColorBrush((Color)Application.Current.Resources["ColorPrimario"]);
+                grid.BorderThickness = new Thickness(0, 1, 0, 0);
+                grid.Padding = new Thickness(10, 20, 10, 10);
+            }
 
             ColumnDefinition col1 = new ColumnDefinition();
             ColumnDefinition col2 = new ColumnDefinition();
@@ -327,16 +392,138 @@ namespace Steam
             StackPanel spBotones = new StackPanel
             {
                 Orientation = Orientation.Horizontal,
-                Margin = new Thickness(0, 10, 0, 0)
+                Margin = new Thickness(0, 20, 0, 0)
             };
 
-            Button2 botonYoutube = new Button2();
-            botonYoutube.Tag = juegoyLogro;
+            StackPanel spYoutube = new StackPanel
+            {
+                Orientation = Orientation.Horizontal
+            };
+
+            FontAwesome iconoYoutube = new FontAwesome
+            {
+                Foreground = new SolidColorBrush((Color)Application.Current.Resources["ColorFuente"]),
+                Icon = EFontAwesomeIcon.Brands_Youtube
+            };
+
+            spYoutube.Children.Add(iconoYoutube);
+
+            ResourceLoader recursos = new ResourceLoader();
+
+            TextBlock tbYoutube = new TextBlock
+            {
+                Foreground = new SolidColorBrush((Color)Application.Current.Resources["ColorFuente"]),
+                Margin = new Thickness(10, 0, 0, 0),
+                Text = recursos.GetString("VideoYoutube")
+            };
+
+            spYoutube.Children.Add(tbYoutube);
+
+            Button2 botonYoutube = new Button2
+            {
+                Tag = juegoyLogro,
+                Content = spYoutube,
+                Background = new SolidColorBrush(Colors.Transparent),
+                CornerRadius = new CornerRadius(5),
+                RequestedTheme = ElementTheme.Light,
+                BorderThickness = new Thickness(0)
+            };
 
             botonYoutube.Click += AbrirYoutube;
+            botonYoutube.PointerEntered += Animaciones.EntraRatonBoton2;
+            botonYoutube.PointerExited += Animaciones.SaleRatonBoton2;
 
+            if (trial == true)
+            {
+                botonYoutube.IsEnabled = false;
+            }
+            else
+            {
+                botonYoutube.IsEnabled = true;
+            }
 
             spBotones.Children.Add(botonYoutube);
+
+            //----------------------------------------------
+
+            TextBlock tbBusqueda = new TextBlock
+            {
+                Foreground = new SolidColorBrush((Color)Application.Current.Resources["ColorFuente"]),
+                Margin = new Thickness(20, 0, 0, 0),
+                Text = recursos.GetString("Search"),
+                VerticalAlignment = VerticalAlignment.Center
+            };
+
+            spBotones.Children.Add(tbBusqueda);
+
+            StackPanel spGoogle = new StackPanel
+            {
+                Orientation = Orientation.Horizontal
+            };
+
+            FontAwesome iconoGoogle = new FontAwesome
+            {
+                Foreground = new SolidColorBrush((Color)Application.Current.Resources["ColorFuente"]),
+                Icon = EFontAwesomeIcon.Brands_Google
+            };
+
+            spGoogle.Children.Add(iconoGoogle);
+
+            Button2 botonGoogle = new Button2
+            {
+                Tag = juegoyLogro,
+                Content = spGoogle,
+                Background = new SolidColorBrush(Colors.Transparent),
+                CornerRadius = new CornerRadius(5),
+                RequestedTheme = ElementTheme.Light,
+                BorderThickness = new Thickness(0),
+                Margin = new Thickness(20, 0, 0, 0)
+            };
+
+            botonGoogle.Click += AbrirGoogle;
+            botonGoogle.PointerEntered += Animaciones.EntraRatonBoton2;
+            botonGoogle.PointerExited += Animaciones.SaleRatonBoton2;
+
+            if (trial == true)
+            {
+                botonGoogle.IsEnabled = false;
+            }
+            else
+            {
+                botonGoogle.IsEnabled = true;
+            }
+
+            spBotones.Children.Add(botonGoogle);
+
+            StackPanel spBing = new StackPanel
+            {
+                Orientation = Orientation.Horizontal
+            };
+
+            FontAwesome iconoBing = new FontAwesome
+            {
+                Foreground = new SolidColorBrush((Color)Application.Current.Resources["ColorFuente"]),
+                Icon = EFontAwesomeIcon.Brands_Microsoft
+            };
+
+            spBing.Children.Add(iconoBing);
+
+            Button2 botonBing = new Button2
+            {
+                Tag = juegoyLogro,
+                Content = spBing,
+                Background = new SolidColorBrush(Colors.Transparent),
+                CornerRadius = new CornerRadius(5),
+                RequestedTheme = ElementTheme.Light,
+                BorderThickness = new Thickness(0),
+                Margin = new Thickness(10, 0, 0, 0)
+            };
+
+            botonBing.Click += AbrirBing;
+            botonBing.PointerEntered += Animaciones.EntraRatonBoton2;
+            botonBing.PointerExited += Animaciones.SaleRatonBoton2;
+
+            spBotones.Children.Add(botonBing);
 
             sp.Children.Add(spBotones);
 
@@ -351,26 +538,45 @@ namespace Steam
 
         public static async void AbrirYoutube(object sender, RoutedEventArgs e)
         {
+            ResourceLoader recursos = new ResourceLoader();
+            ObjetosVentana.tTipLogros.Subtitle = recursos.GetString("SearchingYoutube");
+            ObjetosVentana.tTipLogros.IsOpen = true;
+            ActivaryDesactivarYoutube(false, ObjetosVentana.spLogrosCompletados);
+            ActivaryDesactivarYoutube(false, ObjetosVentana.spLogrosPendientes);
 
-
-
+            //----------------------------------------------
 
             Button2 boton = sender as Button2;
             SteamJuegoyLogro juegoyLogro = boton.Tag as SteamJuegoyLogro;
 
             YoutubeClient youtube = new YoutubeClient();
-            IReadOnlyList<VideoSearchResult> videos = await youtube.Search.GetVideosAsync(juegoyLogro.Juego.Titulo + " " + juegoyLogro.Logro.Nombre);
+            IReadOnlyList<VideoSearchResult> videos = null;
+
+            await Task.Run(async () =>
+            {
+                videos = await youtube.Search.GetVideosAsync(juegoyLogro.Juego.Titulo + " " + juegoyLogro.Logro.Nombre);
+            });
+
+            ObjetosVentana.tTipLogros.IsOpen = false;
+            ActivaryDesactivarYoutube(true, ObjetosVentana.spLogrosCompletados);
+            ActivaryDesactivarYoutube(true, ObjetosVentana.spLogrosPendientes);
 
             if (videos.Count > 0)
             {
-                VideoLibrary.YouTube libreria = VideoLibrary.YouTube.Default;
-                IEnumerable<VideoLibrary.YouTubeVideo> resultados = libreria.GetAllVideos(videos[0].Url);
+                YouTube libreria = YouTube.Default;
+                IEnumerable<YouTubeVideo> resultados = libreria.GetAllVideos(videos[0].Url);
                 string enlace = string.Empty;
+                int resolucion = 0;
 
-                foreach (var resultado in resultados)
+                foreach (YouTubeVideo resultado in resultados)
                 {
+                    resolucion = resultado.Resolution;
                     enlace = resultado.Uri;
-                    break;
+
+                    if (resolucion >= 720)
+                    {
+                        break;
+                    }          
                 }
 
                 MediaPlayerElement reproductor = new MediaPlayerElement
@@ -380,18 +586,85 @@ namespace Steam
                     AreTransportControlsEnabled = true
                 };
 
-                ResourceLoader recursos = new ResourceLoader();
-
                 ContentDialog ventana = new ContentDialog
                 {
                     RequestedTheme = ElementTheme.Dark,
+                    SecondaryButtonText = recursos.GetString("OpenVideoYoutube"),
                     CloseButtonText = recursos.GetString("Close"),
                     Content = reproductor,
-                    XamlRoot = ObjetosVentana.ventana.Content.XamlRoot
+                    XamlRoot = ObjetosVentana.ventana.Content.XamlRoot,
+                    Tag = videos[0].Url
                 };
+
+                ventana.SecondaryButtonClick += AbrirVideoYoutube;
+                ventana.CloseButtonClick += CerrarVentanaYoutube;
 
                 await ventana.ShowAsync();
             }
+        }
+
+        private static void ActivaryDesactivarYoutube(bool estado, StackPanel spYoutube)
+        {
+            foreach (Grid grid in spYoutube.Children)
+            {
+                StackPanel sp = grid.Children[1] as StackPanel;
+
+                StackPanel sp2 = null;
+
+                if (sp.Children[1].GetType() == typeof(StackPanel))
+                {
+                    sp2 = sp.Children[1] as StackPanel;
+                }
+                else if (sp.Children[2].GetType() == typeof(StackPanel))
+                {
+                    sp2 = sp.Children[2] as StackPanel;
+                }
+                
+                if (sp2 != null)
+                {
+                    Button2 boton2 = sp2.Children[0] as Button2;
+                    boton2.IsEnabled = estado;
+                }
+            }
+        }
+
+        private static async void AbrirVideoYoutube(ContentDialog ventana, ContentDialogButtonClickEventArgs e)
+        {
+            string video = ventana.Tag as string;
+            await Launcher.LaunchUriAsync(new Uri(video));
+
+            MediaPlayerElement reproductor = ventana.Content as MediaPlayerElement;
+            reproductor.AutoPlay = false;
+            reproductor.MediaPlayer.Pause();
+        }
+
+        private static void CerrarVentanaYoutube(ContentDialog ventana, ContentDialogButtonClickEventArgs e) 
+        {
+            MediaPlayerElement reproductor = ventana.Content as MediaPlayerElement;
+            reproductor.AutoPlay = false;
+            reproductor.MediaPlayer.Pause();
+        }
+
+        public static async void AbrirGoogle(object sender, RoutedEventArgs e)
+        {
+            Button2 boton = sender as Button2;
+            SteamJuegoyLogro juegoyLogro = boton.Tag as SteamJuegoyLogro;
+
+            string busqueda = juegoyLogro.Juego.Titulo + " " + juegoyLogro.Logro.Nombre;
+            busqueda = busqueda.Replace(" ", "+");
+
+            await Launcher.LaunchUriAsync(new Uri("https://www.google.com/search?q=" + busqueda));
+        }
+
+        public static async void AbrirBing(object sender, RoutedEventArgs e)
+        {
+            Button2 boton = sender as Button2;
+            SteamJuegoyLogro juegoyLogro = boton.Tag as SteamJuegoyLogro;
+
+            string busqueda = juegoyLogro.Juego.Titulo + " " + juegoyLogro.Logro.Nombre;
+            busqueda = busqueda.Replace(" ", "+");
+
+            await Launcher.LaunchUriAsync(new Uri("https://www.bing.com/search?q=" + busqueda));
         }
     }
 

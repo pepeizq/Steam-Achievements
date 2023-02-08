@@ -177,6 +177,9 @@
   <data name="NoGames" xml:space="preserve">
     <value>No se han detectado juegos con logros</value>
   </data>
+  <data name="OpenVideoYoutube" xml:space="preserve">
+    <value>Abrir vídeo en navegador</value>
+  </data>
   <data name="Options" xml:space="preserve">
     <value>Opciones</value>
   </data>
@@ -206,6 +209,24 @@
   </data>
   <data name="OptionsLanguageInfo.Text" xml:space="preserve">
     <value>Selecciona el idioma de la aplicación, es necesario un reinicio en la aplicación para efectuar el cambio.</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Búsqueda en:</value>
+  </data>
+  <data name="SearchingYoutube" xml:space="preserve">
+    <value>Buscando vídeo en YouTube</value>
+  </data>
+  <data name="SteamGuides.Text" xml:space="preserve">
+    <value>Guías en Steam</value>
+  </data>
+  <data name="TrialMessage.Text" xml:space="preserve">
+    <value>Estás usando una versión Trial de la aplicación, varias funciones están desactivadas</value>
+  </data>
+  <data name="TrialMessageBuyApp.Text" xml:space="preserve">
+    <value>Comprar Aplicación</value>
+  </data>
+  <data name="VideoYoutube" xml:space="preserve">
+    <value>Vídeo en YouTube</value>
   </data>
   <data name="Yes.Text" xml:space="preserve">
     <value>Si</value>
