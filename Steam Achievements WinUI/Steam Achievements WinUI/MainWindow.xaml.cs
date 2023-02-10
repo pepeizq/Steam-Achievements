@@ -3,7 +3,6 @@ using Interfaz;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Windows.ApplicationModel.Resources;
-using Windows.ApplicationModel;
 using Expander = Microsoft.UI.Xaml.Controls.Expander;
 
 namespace Steam_Achievements_WinUI
