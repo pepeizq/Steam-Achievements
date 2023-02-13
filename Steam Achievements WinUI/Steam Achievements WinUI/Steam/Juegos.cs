@@ -64,9 +64,10 @@ namespace Steam
 
                         if (ObjetosVentana.gvJuegosBuscador.Items.Count > 0)
                         {
-                            foreach (Button2 boton in ObjetosVentana.gvJuegosBuscador.Items)
+                            foreach (GridViewItem gvItemJuego in ObjetosVentana.gvJuegosBuscador.Items)
                             {
-                                SteamCuentayJuego cuentayJuego = boton.Tag as SteamCuentayJuego;
+                                Button2 botonJuego = gvItemJuego.Content as Button2;
+                                SteamCuentayJuego cuentayJuego = botonJuego.Tag as SteamCuentayJuego;
 
                                 if (juego.ID == cuentayJuego.Juego.ID)
                                 {
@@ -231,9 +232,10 @@ namespace Steam
 
                         if (ObjetosVentana.gvJuegos.Items.Count > 0)
                         {
-                            foreach (Button2 boton in ObjetosVentana.gvJuegos.Items)
+                            foreach (GridViewItem gvItemJuego in ObjetosVentana.gvJuegos.Items)
                             {
-                                SteamCuentayJuego cuentayJuego = boton.Tag as SteamCuentayJuego;
+                                Button2 botonJuego = gvItemJuego.Content as Button2;
+                                SteamCuentayJuego cuentayJuego = botonJuego.Tag as SteamCuentayJuego;
 
                                 if (juegos[i].ID == cuentayJuego.Juego.ID)
                                 {
@@ -259,7 +261,7 @@ namespace Steam
             }   
         }
 
-        public static async Task<Button2> BotonEstilo(SteamCuenta cuenta, SteamJuego juego, bool buscador)
+        public static async Task<GridViewItem> BotonEstilo(SteamCuenta cuenta, SteamJuego juego, bool buscador)
         {
             if (juego != null)
             {
@@ -296,11 +298,18 @@ namespace Steam
 
                     if (cargar == true) 
                     {
+                        SolidColorBrush fondo = new SolidColorBrush
+                        {
+                            Color = (Color)Application.Current.Resources["ColorPrimario"],
+                            Opacity = 0.4
+                        };
+
                         StackPanel sp = new StackPanel
                         {
                             Orientation = Orientation.Vertical,
-                            Padding = new Thickness(10),
-                            VerticalAlignment = VerticalAlignment.Stretch
+                            Padding = new Thickness(0),
+                            VerticalAlignment = VerticalAlignment.Stretch,
+                            Background = fondo
                         };
 
                         Image imagen = new Image
@@ -308,7 +317,7 @@ namespace Steam
                             Source = new BitmapImage(new Uri(juego.Imagen)),
                             Stretch = Stretch.Uniform,
                             Tag = cuentayJuego,
-                            MinHeight = 250
+                            MinHeight = 245
                         };
 
                         imagen.ImageOpened += ImagenCarga;
@@ -319,7 +328,7 @@ namespace Steam
                         TextBlock tb = new TextBlock
                         {
                             Foreground = new SolidColorBrush((Color)Application.Current.Resources["ColorFuente"]),
-                            Margin = new Thickness(0, 5, 0, 0),
+                            Margin = new Thickness(10),
                             HorizontalAlignment = HorizontalAlignment.Right
                         };
 
@@ -331,7 +340,10 @@ namespace Steam
                             Tag = cuentayJuego,
                             Padding = new Thickness(0),
                             Background = new SolidColorBrush(Colors.Transparent),
-                            BorderThickness = new Thickness(0)
+                            BorderBrush = new SolidColorBrush((Color)Application.Current.Resources["ColorPrimario"]),
+                            BorderThickness = new Thickness(1),
+                            Margin = new Thickness(0),
+                            CornerRadius = new CornerRadius(5)
                         };
 
                         botonJuego.Click += Logros.CargarJuego;
@@ -346,7 +358,13 @@ namespace Steam
                         ToolTipService.SetToolTip(botonJuego, tbTt);
                         ToolTipService.SetPlacement(botonJuego, PlacementMode.Bottom);
 
-                        return botonJuego;
+                        GridViewItem gvItem = new GridViewItem
+                        {
+                            Content = botonJuego,
+                            Margin = new Thickness(10)
+                        };
+
+                        return gvItem;
                     }                    
                 }               
             }
@@ -387,13 +405,14 @@ namespace Steam
                     gvUsado = ObjetosVentana.gvJuegosBuscador;
                 }
 
-                foreach (Button2 botonJuego in gvUsado.Items)
+                foreach (GridViewItem gvItemJuego in gvUsado.Items)
                 {
+                    Button2 botonJuego = gvItemJuego.Content as Button2;
                     SteamCuentayJuego juegoGv = botonJuego.Tag as SteamCuentayJuego;
 
                     if (juegoGv.Juego.ID == cuentayJuego.Juego.ID)
                     {
-                        gvUsado.Items.Remove(botonJuego);
+                        gvUsado.Items.Remove(gvItemJuego);
                         break;
                     }
                 }
@@ -419,8 +438,9 @@ namespace Steam
                     gvUsado = ObjetosVentana.gvJuegosBuscador;
                 }
 
-                foreach (Button2 botonJuego in gvUsado.Items)
+                foreach (GridViewItem gvItemJuego in gvUsado.Items)
                 {
+                    Button2 botonJuego = gvItemJuego.Content as Button2;
                     SteamCuentayJuego juegoGv = botonJuego.Tag as SteamCuentayJuego;
 
                     if (juegoGv.Juego.ID == cuentayJuego.Juego.ID)
@@ -461,13 +481,14 @@ namespace Steam
             }
             else
             {
-                foreach (Button2 botonJuego in ObjetosVentana.gvJuegos.Items)
+                foreach (GridViewItem gvItemJuego in ObjetosVentana.gvJuegos.Items)
                 {
+                    Button2 botonJuego = gvItemJuego.Content as Button2;
                     SteamCuentayJuego juegoGv = botonJuego.Tag as SteamCuentayJuego;
 
                     if (juegoGv.Juego.ID == cuentayJuego.Juego.ID)
                     {
-                        ObjetosVentana.gvJuegos.Items.Remove(botonJuego);
+                        ObjetosVentana.gvJuegos.Items.Remove(gvItemJuego);
                         break;
                     }
                 }
