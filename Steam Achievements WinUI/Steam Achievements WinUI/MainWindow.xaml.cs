@@ -65,7 +65,6 @@ namespace Steam_Achievements_WinUI
             ObjetosVentana.spJuegosBuscador = spJuegosBuscador;
             ObjetosVentana.tbJuegosBuscador = tbJuegosBuscador;
             ObjetosVentana.svJuegos = svJuegos;
-            ObjetosVentana.prJuegos = prJuegos;
             ObjetosVentana.gvJuegos = gvJuegos;
             ObjetosVentana.gvJuegosBuscador = gvJuegosBuscador;
             ObjetosVentana.tTipJuegos = tTipJuegos;
@@ -133,7 +132,6 @@ namespace Steam_Achievements_WinUI
             public static StackPanel spJuegosBuscador { get; set; }
             public static TextBox tbJuegosBuscador { get; set; }
             public static ScrollViewer svJuegos { get; set; }
-            public static ProgressRing prJuegos { get; set; }
             public static AdaptiveGridView gvJuegos { get; set; }
             public static AdaptiveGridView gvJuegosBuscador { get; set; }
             public static TeachingTip tTipJuegos { get; set; }

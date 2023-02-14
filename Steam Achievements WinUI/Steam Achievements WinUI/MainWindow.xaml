@@ -181,8 +181,6 @@
                 <Grid x:Name="gridJuegos" Visibility="Collapsed">
                     <ScrollViewer x:Name="svJuegos" VerticalScrollBarVisibility="Visible" Padding="0,0,15,0" HorizontalAlignment="Stretch" VerticalAlignment="Top">
                         <StackPanel Orientation="Vertical">
-                            <ProgressRing x:Name="prJuegos" IsIndeterminate="True" Foreground="{StaticResource ColorFuente}" VerticalAlignment="Center" HorizontalAlignment="Left" Visibility="Collapsed" Margin="30"/>
-
                             <controls:AdaptiveGridView x:Name="gvJuegos" DesiredWidth="200" StretchContentForSingleRow="False"/>
                             <controls:AdaptiveGridView x:Name="gvJuegosBuscador" DesiredWidth="200" StretchContentForSingleRow="False" Visibility="Collapsed"/>
 

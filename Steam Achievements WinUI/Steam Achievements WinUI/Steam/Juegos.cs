@@ -210,55 +210,58 @@ namespace Steam
 
         public static async void CargarMasJuegos(object sender, ScrollViewerViewChangingEventArgs e)
         {
-            if (ObjetosVentana.tbJuegosBuscador.Text.Length < 4 || ObjetosVentana.gvJuegos.Items.Count > 0)
+            if (ObjetosVentana.tTipJuegos.IsOpen == false)
             {
-                ScrollViewer sv = sender as ScrollViewer;
-
-                if (sv.ScrollableHeight < 400 || sv.VerticalOffset == sv.ScrollableHeight)
+                if (ObjetosVentana.gvJuegos.Visibility == Visibility.Visible && ObjetosVentana.gvJuegos.Items.Count > 0)
                 {
-                    ResourceLoader recursos = new ResourceLoader();
+                    ScrollViewer sv = sender as ScrollViewer;
 
-                    ObjetosVentana.tTipJuegos.IsOpen = true;
-                    ObjetosVentana.tTipJuegos.Subtitle = recursos.GetString("LoadingGames");
-
-                    SteamCuentayJuegos cuentayJuegos = ObjetosVentana.gvJuegos.Tag as SteamCuentayJuegos;
-                    List<SteamJuego> juegos = cuentayJuegos.Juegos;
-
-                    int i = cuentayJuegos.JuegosComprobados;
-
-                    while (i < cuentayJuegos.JuegosComprobados + 100 && i < juegos.Count)
+                    if (sv.VerticalOffset > sv.ScrollableHeight - 50)
                     {
-                        bool añadir = true;
+                        ResourceLoader recursos = new ResourceLoader();
 
-                        if (ObjetosVentana.gvJuegos.Items.Count > 0)
+                        ObjetosVentana.tTipJuegos.IsOpen = true;
+                        ObjetosVentana.tTipJuegos.Subtitle = recursos.GetString("LoadingGames");
+
+                        SteamCuentayJuegos cuentayJuegos = ObjetosVentana.gvJuegos.Tag as SteamCuentayJuegos;
+                        List<SteamJuego> juegos = cuentayJuegos.Juegos;
+
+                        int i = cuentayJuegos.JuegosComprobados;
+
+                        while (i < cuentayJuegos.JuegosComprobados + 100 && i < juegos.Count)
                         {
-                            foreach (GridViewItem gvItemJuego in ObjetosVentana.gvJuegos.Items)
-                            {
-                                Button2 botonJuego = gvItemJuego.Content as Button2;
-                                SteamCuentayJuego cuentayJuego = botonJuego.Tag as SteamCuentayJuego;
+                            bool añadir = true;
 
-                                if (juegos[i].ID == cuentayJuego.Juego.ID)
+                            if (ObjetosVentana.gvJuegos.Items.Count > 0)
+                            {
+                                foreach (GridViewItem gvItemJuego in ObjetosVentana.gvJuegos.Items)
                                 {
-                                    añadir = false;
-                                    break;
+                                    Button2 botonJuego = gvItemJuego.Content as Button2;
+                                    SteamCuentayJuego cuentayJuego = botonJuego.Tag as SteamCuentayJuego;
+
+                                    if (juegos[i].ID == cuentayJuego.Juego.ID)
+                                    {
+                                        añadir = false;
+                                        break;
+                                    }
                                 }
                             }
+
+                            if (añadir == true)
+                            {
+                                ObjetosVentana.gvJuegos.Items.Add(await BotonEstilo(cuentayJuegos.Cuenta, juegos[i], false));
+                            }
+
+                            i += 1;
                         }
 
-                        if (añadir == true)
-                        {
-                            ObjetosVentana.gvJuegos.Items.Add(await BotonEstilo(cuentayJuegos.Cuenta, juegos[i], false));
-                        }
+                        cuentayJuegos.JuegosComprobados = cuentayJuegos.JuegosComprobados + 100;
+                        ObjetosVentana.gvJuegos.Tag = cuentayJuegos;
 
-                        i += 1;
+                        ObjetosVentana.tTipJuegos.IsOpen = false;
                     }
-
-                    cuentayJuegos.JuegosComprobados = cuentayJuegos.JuegosComprobados + 100;
-                    ObjetosVentana.gvJuegos.Tag = cuentayJuegos;
-
-                    ObjetosVentana.tTipJuegos.IsOpen = false;
                 }
-            }   
+            }          
         }
 
         public static async Task<GridViewItem> BotonEstilo(SteamCuenta cuenta, SteamJuego juego, bool buscador)
@@ -317,13 +320,21 @@ namespace Steam
                             Source = new BitmapImage(new Uri(juego.Imagen)),
                             Stretch = Stretch.Uniform,
                             Tag = cuentayJuego,
-                            MinHeight = 245
+                            Height = 250
                         };
 
                         imagen.ImageOpened += ImagenCarga;
                         imagen.ImageFailed += ImagenFalla;
 
                         sp.Children.Add(imagen);
+
+                        Grid barra = new Grid
+                        {
+                            BorderBrush = new SolidColorBrush((Color)Application.Current.Resources["ColorPrimario"]),
+                            BorderThickness = new Thickness(1)
+                        };
+
+                        sp.Children.Add(barra);
 
                         TextBlock tb = new TextBlock
                         {
@@ -446,7 +457,7 @@ namespace Steam
                     if (juegoGv.Juego.ID == cuentayJuego.Juego.ID)
                     {
                         StackPanel sp = botonJuego.Content as StackPanel;
-                        TextBlock tb = sp.Children[1] as TextBlock;
+                        TextBlock tb = sp.Children[2] as TextBlock;
 
                         int contadorLogrosHechos = 0;
 
@@ -458,7 +469,28 @@ namespace Steam
                             }
                         }
 
-                        tb.Text = contadorLogrosHechos.ToString() + "/" + logros.Count.ToString() + " • " + ((int)Math.Round((double)(100 * contadorLogrosHechos / logros.Count))).ToString() + "%";
+                        int porcentaje = (int)Math.Round((double)(100 * contadorLogrosHechos / logros.Count));
+
+                        tb.Text = contadorLogrosHechos.ToString() + "/" + logros.Count.ToString() + " • " + porcentaje.ToString() + "%";
+                    
+                        Grid barra = sp.Children[1] as Grid;
+
+                        if (porcentaje < 30)
+                        {
+                            barra.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 144, 16, 0));
+                        }
+                        else if (porcentaje > 29 && porcentaje < 60)
+                        {
+                            barra.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 144, 144, 0));
+                        }
+                        else if (porcentaje > 59 && porcentaje < 90)
+                        {
+                            barra.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 86, 144, 0));
+                        }
+                        else if (porcentaje > 89)
+                        {
+                            barra.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 0, 144, 0));
+                        }
                     }
                 }
             }
