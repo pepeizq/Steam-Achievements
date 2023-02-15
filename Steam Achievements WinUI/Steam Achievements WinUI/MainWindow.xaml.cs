@@ -76,6 +76,9 @@ namespace Steam_Achievements_WinUI
             ObjetosVentana.imagenLogrosCabecera = imagenLogrosCabecera;
             ObjetosVentana.gridLogrosTrialMensaje = gridLogrosTrialMensaje;
             ObjetosVentana.botonLogrosTrialComprarApp = botonLogrosTrialComprarApp;
+            ObjetosVentana.botonLogrosSteam = botonLogrosSteam;
+            ObjetosVentana.botonLogrosDetallesSteam = botonLogrosDetallesSteam;
+            ObjetosVentana.botonLogrosHubSteam = botonLogrosHubSteam;
             ObjetosVentana.botonLogrosGuiasSteam = botonLogrosGuiasSteam;
             ObjetosVentana.expanderLogrosCompletados = expanderLogrosCompletados;
             ObjetosVentana.spLogrosCompletados = spLogrosCompletados;
@@ -143,6 +146,9 @@ namespace Steam_Achievements_WinUI
             public static Image imagenLogrosCabecera { get; set; }
             public static Grid gridLogrosTrialMensaje { get; set; }
             public static Button botonLogrosTrialComprarApp { get; set; }
+            public static Button botonLogrosSteam { get; set; }
+            public static Button botonLogrosDetallesSteam { get; set; }
+            public static Button botonLogrosHubSteam { get; set; }
             public static Button botonLogrosGuiasSteam { get; set; }
             public static Expander expanderLogrosCompletados { get; set; }
             public static StackPanel spLogrosCompletados { get; set; }

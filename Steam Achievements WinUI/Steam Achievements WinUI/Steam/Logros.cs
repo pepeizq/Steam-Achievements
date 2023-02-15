@@ -39,12 +39,45 @@ namespace Steam
                 ObjetosVentana.botonLogrosTrialComprarApp.PointerExited += Animaciones.SaleRatonBoton2;
             }
 
-            ObjetosVentana.botonLogrosGuiasSteam.Click += AbrirGuiaJuego;
+            ObjetosVentana.botonLogrosSteam.Click += AbrirLogrosJuego;
+            ObjetosVentana.botonLogrosSteam.PointerEntered += Animaciones.EntraRatonBoton2;
+            ObjetosVentana.botonLogrosSteam.PointerExited += Animaciones.SaleRatonBoton2;
+
+            ObjetosVentana.botonLogrosDetallesSteam.Click += AbrirDetallesJuego;
+            ObjetosVentana.botonLogrosDetallesSteam.PointerEntered += Animaciones.EntraRatonBoton2;
+            ObjetosVentana.botonLogrosDetallesSteam.PointerExited += Animaciones.SaleRatonBoton2;
+
+            ObjetosVentana.botonLogrosHubSteam.Click += AbrirHubJuego;
+            ObjetosVentana.botonLogrosHubSteam.PointerEntered += Animaciones.EntraRatonBoton2;
+            ObjetosVentana.botonLogrosHubSteam.PointerExited += Animaciones.SaleRatonBoton2;
+
+            ObjetosVentana.botonLogrosGuiasSteam.Click += AbrirGuiasJuego;
             ObjetosVentana.botonLogrosGuiasSteam.PointerEntered += Animaciones.EntraRatonBoton2;
             ObjetosVentana.botonLogrosGuiasSteam.PointerExited += Animaciones.SaleRatonBoton2;
         }
 
-        public static async void AbrirGuiaJuego(object sender, RoutedEventArgs e)
+        public static async void AbrirLogrosJuego(object sender, RoutedEventArgs e)
+        {
+            string id = ObjetosVentana.botonLogrosSteam.Tag as string;
+
+            await Launcher.LaunchUriAsync(new Uri("steam://url/SteamIDAchievementsPage/" + id));
+        }
+
+        public static async void AbrirDetallesJuego(object sender, RoutedEventArgs e)
+        {
+            string id = ObjetosVentana.botonLogrosDetallesSteam.Tag as string;
+
+            await Launcher.LaunchUriAsync(new Uri("steam://nav/games/details/" + id));
+        }
+
+        public static async void AbrirHubJuego(object sender, RoutedEventArgs e)
+        {
+            string id = ObjetosVentana.botonLogrosHubSteam.Tag as string;
+
+            await Launcher.LaunchUriAsync(new Uri("steam://url/GameHub/" + id + "/Guides/"));
+        }
+
+        public static async void AbrirGuiasJuego(object sender, RoutedEventArgs e)
         {
             string id = ObjetosVentana.botonLogrosGuiasSteam.Tag as string;
 
@@ -214,6 +247,9 @@ namespace Steam
                 }
             }
 
+            ObjetosVentana.botonLogrosSteam.Tag = idJuego;
+            ObjetosVentana.botonLogrosDetallesSteam.Tag = idJuego;
+            ObjetosVentana.botonLogrosHubSteam.Tag = idJuego;
             ObjetosVentana.botonLogrosGuiasSteam.Tag = idJuego;
 
             if (logros.Count > 0)

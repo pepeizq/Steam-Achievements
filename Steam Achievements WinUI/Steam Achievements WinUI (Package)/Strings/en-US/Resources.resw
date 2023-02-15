@@ -216,8 +216,17 @@
   <data name="SearchingYoutube" xml:space="preserve">
     <value>Searching video on YouTube</value>
   </data>
+  <data name="SteamAchievements.Text" xml:space="preserve">
+    <value>Achievements</value>
+  </data>
+  <data name="SteamDetails.Text" xml:space="preserve">
+    <value>Details</value>
+  </data>
   <data name="SteamGuides.Text" xml:space="preserve">
-    <value>Guides on Steam</value>
+    <value>Guides</value>
+  </data>
+  <data name="SteamHub.Text" xml:space="preserve">
+    <value>Hub</value>
   </data>
   <data name="TrialMessage.Text" xml:space="preserve">
     <value>You are using a Trial version of the app, several functions are disabled.</value>
