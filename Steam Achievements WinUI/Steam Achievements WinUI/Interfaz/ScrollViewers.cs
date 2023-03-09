@@ -31,6 +31,12 @@ namespace Interfaz
             {
                 ObjetosVentana.nvItemSubirArriba.Visibility = Visibility.Collapsed;
             }
+
+            if (ObjetosVentana.gridLogros.Visibility == Visibility.Visible)
+            {
+                ObjetosVentana.spLogrosCabecera.Margin = new Thickness(0, -sv.VerticalOffset, 0, 0);
+                ObjetosVentana.spLogrosCabecera.Opacity = 1 - (sv.VerticalOffset / 100);
+            }
         }
 
         public static void SubirArriba(object sender, RoutedEventArgs e)

@@ -59,6 +59,7 @@ namespace Steam_Achievements_WinUI
             ObjetosVentana.tbCuentasPreguntarAñadir = tbCuentasPreguntarAnadir;
             ObjetosVentana.botonCuentasAñadirSi = botonCuentasAnadirSi;
             ObjetosVentana.botonCuentasAñadirNo = botonCuentasAnadirNo;
+            ObjetosVentana.tsOpcionesCuentasMensaje = tsOpcionesCuentasMensaje;
 
             //-------------------------------------------------------------------
 
@@ -71,7 +72,9 @@ namespace Steam_Achievements_WinUI
 
             //-------------------------------------------------------------------
 
+            ObjetosVentana.spLogrosBotones = spLogrosBotones;
             ObjetosVentana.svLogros = svLogros;
+            ObjetosVentana.spLogrosPestañas = spLogrosPestanas;
             ObjetosVentana.spLogrosCabecera = spLogrosCabecera;
             ObjetosVentana.imagenLogrosCabecera = imagenLogrosCabecera;
             ObjetosVentana.gridLogrosTrialMensaje = gridLogrosTrialMensaje;
@@ -80,17 +83,17 @@ namespace Steam_Achievements_WinUI
             ObjetosVentana.botonLogrosDetallesSteam = botonLogrosDetallesSteam;
             ObjetosVentana.botonLogrosHubSteam = botonLogrosHubSteam;
             ObjetosVentana.botonLogrosGuiasSteam = botonLogrosGuiasSteam;
-            ObjetosVentana.expanderLogrosCompletados = expanderLogrosCompletados;
             ObjetosVentana.spLogrosCompletados = spLogrosCompletados;
             ObjetosVentana.tbLogrosCompletadosInfo = tbLogrosCompletadosInfo;
-            ObjetosVentana.expanderLogrosPendientes = expanderLogrosPendientes;
             ObjetosVentana.spLogrosPendientes = spLogrosPendientes;
             ObjetosVentana.tbLogrosPendientesInfo = tbLogrosPendientesInfo;
             ObjetosVentana.tTipLogros = tTipLogros;
 
             //-------------------------------------------------------------------
 
+            ObjetosVentana.spOpcionesBotones = spOpcionesBotones;
             ObjetosVentana.svOpciones = svOpciones;
+            ObjetosVentana.spOpcionesPestañas = spOpcionesPestanas;
             ObjetosVentana.cbOpcionesIdioma = cbOpcionesIdioma;
             ObjetosVentana.cbOpcionesPantalla = cbOpcionesPantalla;
             ObjetosVentana.botonOpcionesLimpiar = botonOpcionesLimpiar;
@@ -129,6 +132,7 @@ namespace Steam_Achievements_WinUI
             public static TextBlock tbCuentasPreguntarAñadir { get; set; }
             public static Button botonCuentasAñadirSi { get; set; }
             public static Button botonCuentasAñadirNo { get; set; }
+            public static ToggleSwitch tsOpcionesCuentasMensaje { get; set; }
 
             //-------------------------------------------------------------------
 
@@ -141,7 +145,9 @@ namespace Steam_Achievements_WinUI
 
             //-------------------------------------------------------------------
 
+            public static StackPanel spLogrosBotones { get; set; }
             public static ScrollViewer svLogros { get; set; }
+            public static StackPanel spLogrosPestañas { get; set; }
             public static StackPanel spLogrosCabecera { get; set; }
             public static Image imagenLogrosCabecera { get; set; }
             public static Grid gridLogrosTrialMensaje { get; set; }
@@ -150,17 +156,17 @@ namespace Steam_Achievements_WinUI
             public static Button botonLogrosDetallesSteam { get; set; }
             public static Button botonLogrosHubSteam { get; set; }
             public static Button botonLogrosGuiasSteam { get; set; }
-            public static Expander expanderLogrosCompletados { get; set; }
             public static StackPanel spLogrosCompletados { get; set; }
             public static TextBlock tbLogrosCompletadosInfo { get; set; }
-            public static Expander expanderLogrosPendientes { get; set; }
             public static StackPanel spLogrosPendientes { get; set; }
             public static TextBlock tbLogrosPendientesInfo { get; set; }
             public static TeachingTip tTipLogros { get; set; }
 
             //-------------------------------------------------------------------
 
+            public static StackPanel spOpcionesBotones { get; set; }
             public static ScrollViewer svOpciones { get; set; }
+            public static StackPanel spOpcionesPestañas { get; set; }
             public static ComboBox cbOpcionesIdioma { get; set; }
             public static ComboBox cbOpcionesPantalla { get; set; }
             public static Button botonOpcionesLimpiar { get; set; }

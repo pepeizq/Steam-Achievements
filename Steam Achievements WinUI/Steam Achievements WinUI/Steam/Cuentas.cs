@@ -3,7 +3,6 @@ using FontAwesome6;
 using FontAwesome6.Fonts;
 using Herramientas;
 using Interfaz;
-using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -41,23 +40,48 @@ namespace Steam
             ObjetosVentana.botonCuentasAñadirNo.PointerEntered += Animaciones.EntraRatonBoton2;
             ObjetosVentana.botonCuentasAñadirNo.PointerExited += Animaciones.SaleRatonBoton2;
 
-            //-------------------------------------------
+            //-------------------------------------
 
             ActualizarCuentas(null);
+
+            //-------------------------------------
+
+            ApplicationDataContainer datos = ApplicationData.Current.LocalSettings;
+
+            if (datos.Values["OpcionesCuentasMensajes"] == null)
+            {
+                datos.Values["OpcionesCuentasMensajes"] = true;
+            }
+
+            ObjetosVentana.tsOpcionesCuentasMensaje.IsOn = (bool)datos.Values["OpcionesCuentasMensajes"];
+            ObjetosVentana.tsOpcionesCuentasMensaje.Toggled += MensajesEnseñar;
+        }
+
+        private static void MensajesEnseñar(object sender, RoutedEventArgs e)
+        {
+            ToggleSwitch ts = sender as ToggleSwitch;
+
+            ApplicationDataContainer datos = ApplicationData.Current.LocalSettings;
+            datos.Values["OpcionesCuentasMensajes"] = ts.IsOn;
         }
 
         public static void DetectarFoco(object sender, RoutedEventArgs e)
         {
-            if (ObjetosVentana.tTipCuentasAviso.IsOpen == false)
-            {
-                ResourceLoader recursos = new ResourceLoader();
+            ApplicationDataContainer datos = ApplicationData.Current.LocalSettings;
 
-                ObjetosVentana.tTipCuentasAviso.Title = recursos.GetString("Advice");
-                ObjetosVentana.tTipCuentasAviso.Subtitle = recursos.GetString("AdvicePermissions");
-                ObjetosVentana.tTipCuentasAviso.IsOpen = true;
-                ObjetosVentana.tTipCuentasAviso.Background = new SolidColorBrush(Colors.Transparent);
-                ObjetosVentana.spCuentasAvisoPermisos.Visibility = Visibility.Visible;
-            }
+            if ((bool)datos.Values["OpcionesCuentasMensajes"] == true)
+            {
+                if (ObjetosVentana.tTipCuentasAviso.IsOpen == false)
+                {
+                    ResourceLoader recursos = new ResourceLoader();
+
+                    ObjetosVentana.tTipCuentasAviso.Title = recursos.GetString("Advice");
+                    ObjetosVentana.tTipCuentasAviso.Subtitle = recursos.GetString("AdvicePermissions");
+                    ObjetosVentana.tTipCuentasAviso.IsOpen = true;
+                    ObjetosVentana.tTipCuentasAviso.Background = new SolidColorBrush((Color)Application.Current.Resources["ColorPrimario"]);
+                    ObjetosVentana.spCuentasAvisoPermisos.Visibility = Visibility.Visible;
+                }
+            }           
         }
 
         public static void PerderFoco(object sender, RoutedEventArgs e)
@@ -84,7 +108,8 @@ namespace Steam
                 RequestedTheme = ElementTheme.Dark,
                 CloseButtonText = recursos.GetString("Close"),
                 Content = imagen,
-                XamlRoot = ObjetosVentana.ventana.Content.XamlRoot
+                XamlRoot = ObjetosVentana.ventana.Content.XamlRoot,
+                Background = new SolidColorBrush((Color)Application.Current.Resources["ColorPrimario"])
             };
 
             await ventana.ShowAsync();
@@ -312,6 +337,8 @@ namespace Steam
         {
             ObjetosVentana.spCuentasAñadidas.Children.Clear();
 
+            ApplicationDataContainer datos = ApplicationData.Current.LocalSettings;
+
             List<SteamCuenta> cuentas = await LeerCuentas();
            
             if (cuentas.Count > 0)
@@ -342,21 +369,18 @@ namespace Steam
 
                     Grid grid = new Grid
                     {
-                        Width = 400,
+                        MinWidth = 400,
                         Margin = new Thickness(0, 5, 0, 5)
                     };
 
                     ColumnDefinition col1 = new ColumnDefinition();
                     ColumnDefinition col2 = new ColumnDefinition();
-                    ColumnDefinition col3 = new ColumnDefinition();
 
-                    col1.Width = new GridLength(1, GridUnitType.Auto);
-                    col2.Width = new GridLength(1, GridUnitType.Star);
-                    col3.Width = new GridLength(1, GridUnitType.Auto);
+                    col1.Width = new GridLength(1, GridUnitType.Star);
+                    col2.Width = new GridLength(1, GridUnitType.Auto);
 
                     grid.ColumnDefinitions.Add(col1);
                     grid.ColumnDefinitions.Add(col2);
-                    grid.ColumnDefinitions.Add(col3);
 
                     //-----------------------------------------------
 
@@ -382,7 +406,6 @@ namespace Steam
                     TextBlock tbBoton1 = new TextBlock
                     {
                         Foreground = new SolidColorBrush((Color)Application.Current.Resources["ColorFuente"]),
-                        MaxWidth = 350,
                         Text = cuenta.Nombre,
                         TextWrapping = TextWrapping.Wrap,
                         VerticalAlignment = VerticalAlignment.Center
@@ -390,15 +413,22 @@ namespace Steam
 
                     spBoton1.Children.Add(tbBoton1);
 
+                    SolidColorBrush colorBoton1 = new SolidColorBrush
+                    {
+                        Color = (Color)Application.Current.Resources["ColorPrimario"],
+                        Opacity = 0.6
+                    };
+
                     Button2 boton1 = new Button2
                     {
                         Content = spBoton1,
                         RequestedTheme = ElementTheme.Light,
                         CornerRadius = new CornerRadius(5),
-                        Background = new SolidColorBrush(Colors.Transparent),
+                        Background = colorBoton1,
                         BorderThickness = new Thickness(0),
                         Padding = new Thickness(20),
-                        HorizontalAlignment = HorizontalAlignment.Left,
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        HorizontalContentAlignment = HorizontalAlignment.Left,
                         Tag = cuenta
                     };
 
@@ -409,35 +439,42 @@ namespace Steam
                     boton1.SetValue(Grid.ColumnProperty, 0);
                     grid.Children.Add(boton1);
 
-                    if (cuentaSeñalar != null)
+                    if (datos.Values["OpcionesCuentasMensajes"] != null)
                     {
-                        if (cuentaSeñalar.ID64 == cuenta.ID64)
+                        if ((bool)datos.Values["OpcionesCuentasMensajes"] == true)
                         {
-                            ResourceLoader recursos = new ResourceLoader();
-
-                            SymbolIconSource iconoConsejo = new SymbolIconSource
+                            if (cuentaSeñalar != null)
                             {
-                                Foreground = new SolidColorBrush((Color)Application.Current.Resources["ColorFuente"]),
-                                Symbol = Symbol.Important
-                            };
+                                if (cuentaSeñalar.ID64 == cuenta.ID64)
+                                {
+                                    ResourceLoader recursos = new ResourceLoader();
 
-                            TeachingTip consejo = new TeachingTip
-                            {
-                                Target = boton1,
-                                IsOpen = true,
-                                RequestedTheme = ElementTheme.Dark,
-                                Subtitle = recursos.GetString("AdviceLoadAccount"),
-                                Title = recursos.GetString("Advice"),
-                                IconSource = iconoConsejo,
-                                Tag = grid
-                            };
-                       
-                            consejo.CloseButtonClick += Consejos.CerrarConsejo;
+                                    SymbolIconSource iconoConsejo = new SymbolIconSource
+                                    {
+                                        Foreground = new SolidColorBrush((Color)Application.Current.Resources["ColorFuente"]),
+                                        Symbol = Symbol.Important
+                                    };
 
-                            grid.Children.Add(consejo);
+                                    TeachingTip consejo = new TeachingTip
+                                    {
+                                        Target = boton1,
+                                        IsOpen = true,
+                                        RequestedTheme = ElementTheme.Dark,
+                                        Subtitle = recursos.GetString("AdviceLoadAccount"),
+                                        Title = recursos.GetString("Advice"),
+                                        IconSource = iconoConsejo,
+                                        Tag = grid,
+                                        Background = new SolidColorBrush((Color)Application.Current.Resources["ColorPrimario"])
+                                    };
+
+                                    consejo.CloseButtonClick += Consejos.CerrarConsejo;
+
+                                    grid.Children.Add(consejo);
+                                }
+                            }
                         }
                     }
-
+                                           
                     //-----------------------------------------------
 
                     StackPanel spBoton2 = new StackPanel
@@ -449,7 +486,7 @@ namespace Steam
                     FontAwesome icono2 = new FontAwesome
                     {
                         Foreground = new SolidColorBrush((Color)Application.Current.Resources["ColorFuente"]),
-                        Icon = EFontAwesomeIcon.Solid_TrashCan
+                        Icon = EFontAwesomeIcon.Solid_Xmark
                     };
 
                     spBoton2.Children.Add(icono2);
@@ -459,17 +496,18 @@ namespace Steam
                         Content = spBoton2,
                         RequestedTheme = ElementTheme.Light,
                         CornerRadius = new CornerRadius(5),
-                        Background = new SolidColorBrush(Colors.Transparent),
+                        Background = colorBoton1,
                         BorderThickness = new Thickness(0),
-                        Padding = new Thickness(12),
-                        Tag = cuenta
+                        Padding = new Thickness(12, 10, 12, 10),
+                        Tag = cuenta,
+                        Margin = new Thickness(20, 0, 0, 0)
                     };
 
                     boton2.Click += BorrarCuenta;
                     boton2.PointerEntered += Animaciones.EntraRatonBoton2;
                     boton2.PointerExited += Animaciones.SaleRatonBoton2;
 
-                    boton2.SetValue(Grid.ColumnProperty, 2);
+                    boton2.SetValue(Grid.ColumnProperty, 1);
                     grid.Children.Add(boton2);
 
                     //-----------------------------------------------

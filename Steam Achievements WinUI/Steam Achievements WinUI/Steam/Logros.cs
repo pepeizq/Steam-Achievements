@@ -5,6 +5,7 @@ using Interfaz;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.Windows.ApplicationModel.Resources;
@@ -30,6 +31,29 @@ namespace Steam
         {
             ObjetosVentana.imagenLogrosCabecera.ImageFailed += CabeceraImagenFalla;
 
+            //---------------------------------
+
+            int i = 0;
+            foreach (object boton in ObjetosVentana.spLogrosBotones.Children)
+            {
+                if (boton.GetType() == typeof(Button2))
+                {
+                    Button2 boton2 = boton as Button2;
+
+                    boton2.Tag = i;
+                    boton2.Click += CambiarPestaña;
+                    boton2.PointerEntered += Animaciones.EntraRatonBoton2;
+                    boton2.PointerExited += Animaciones.SaleRatonBoton2;
+
+                    i += 1;
+                }
+
+            }
+
+            CambiarPestaña(1);
+
+            //---------------------------------
+
             bool trial = await Trial.Detectar();
 
             if (trial == true)
@@ -54,6 +78,47 @@ namespace Steam
             ObjetosVentana.botonLogrosGuiasSteam.Click += AbrirGuiasJuego;
             ObjetosVentana.botonLogrosGuiasSteam.PointerEntered += Animaciones.EntraRatonBoton2;
             ObjetosVentana.botonLogrosGuiasSteam.PointerExited += Animaciones.SaleRatonBoton2;
+        }
+
+        private static void CambiarPestaña(object sender, RoutedEventArgs e)
+        {
+            Button2 botonPulsado = sender as Button2;
+            int pestañaMostrar = (int)botonPulsado.Tag;
+            CambiarPestaña(pestañaMostrar);
+        }
+
+        private static void CambiarPestaña(int botonPulsado)
+        {
+            SolidColorBrush colorPulsado = new SolidColorBrush((Color)Application.Current.Resources["ColorPrimario"]);
+            colorPulsado.Opacity = 0.6;
+
+            int i = 0;
+            foreach (object boton in ObjetosVentana.spLogrosBotones.Children)
+            {
+                if (boton.GetType() == typeof(Button2))
+                {
+                    Button2 boton2 = boton as Button2;
+
+                    if (i == botonPulsado)
+                    {
+                        boton2.Background = colorPulsado;
+                    }
+                    else
+                    {
+                        boton2.Background = new SolidColorBrush(Colors.Transparent);
+                    }
+
+                    i += 1;
+                }                    
+            }
+
+            foreach (StackPanel sp in ObjetosVentana.spLogrosPestañas.Children)
+            {
+                sp.Visibility = Visibility.Collapsed;
+            }
+
+            StackPanel spMostrar = ObjetosVentana.spLogrosPestañas.Children[botonPulsado] as StackPanel;
+            spMostrar.Visibility = Visibility.Visible;
         }
 
         public static async void AbrirLogrosJuego(object sender, RoutedEventArgs e)
@@ -155,6 +220,8 @@ namespace Steam
         public static async void CargarJuego(object sender, RoutedEventArgs e)
         {
             await Task.Yield();
+
+            CambiarPestaña(1);
 
             Button2 boton = sender as Button2;
             SteamCuentayJuego cuentayJuego = boton.Tag as SteamCuentayJuego;
@@ -282,11 +349,19 @@ namespace Steam
 
                 if (logrosCompletados.Count == 0)
                 {
-                    ObjetosVentana.expanderLogrosCompletados.Visibility = Visibility.Collapsed;
+                    ObjetosVentana.spLogrosBotones.Children[0].Visibility = Visibility.Collapsed;
+
+                    CambiarPestaña(1);
+
+                    Button2 botonPosicion1 = ObjetosVentana.spLogrosBotones.Children[1] as Button2;
+                    botonPosicion1.Margin = new Thickness(0);
                 }
                 else
                 {
-                    ObjetosVentana.expanderLogrosCompletados.Visibility = Visibility.Visible;
+                    ObjetosVentana.spLogrosBotones.Children[0].Visibility = Visibility.Visible;
+
+                    Button2 botonPosicion1 = ObjetosVentana.spLogrosBotones.Children[1] as Button2;
+                    botonPosicion1.Margin = new Thickness(0, 10, 0, 0);
 
                     ObjetosVentana.tbLogrosCompletadosInfo.Text = logrosCompletados.Count.ToString() + "/" + logros.Count.ToString() + " • " + ((int)Math.Round((double)(100 * logrosCompletados.Count / logros.Count))).ToString() + "%";
 
@@ -310,13 +385,13 @@ namespace Steam
 
                 if (logrosPendientes.Count == 0)
                 {
-                    ObjetosVentana.expanderLogrosCompletados.Margin = new Thickness(0);
-                    ObjetosVentana.expanderLogrosPendientes.Visibility = Visibility.Collapsed;
+                    ObjetosVentana.spLogrosBotones.Children[1].Visibility = Visibility.Collapsed;
+
+                    CambiarPestaña(0);
                 }
                 else
                 {
-                    ObjetosVentana.expanderLogrosCompletados.Margin = new Thickness(0, 0, 0, 40);
-                    ObjetosVentana.expanderLogrosPendientes.Visibility = Visibility.Visible;
+                    ObjetosVentana.spLogrosBotones.Children[1].Visibility = Visibility.Visible;
 
                     ObjetosVentana.tbLogrosPendientesInfo.Text = logrosPendientes.Count.ToString() + "/" + logros.Count.ToString() + " • " + ((int)Math.Round((double)(100 * logrosPendientes.Count / logros.Count))).ToString() + "%";
 
@@ -357,28 +432,36 @@ namespace Steam
                 Logro = logro
             };
 
+            SolidColorBrush colorFondo = new SolidColorBrush
+            {
+                Color = (Color)Application.Current.Resources["ColorPrimario"],
+                Opacity = 0.6
+            };
+
             Grid grid = new Grid
             {
                 VerticalAlignment = VerticalAlignment.Top,
-                Padding = new Thickness(10)
+                Padding = new Thickness(30),
+                CornerRadius = new CornerRadius(5),
+                Background = colorFondo
             };
 
             if (primero == false)
             {
                 grid.Margin = new Thickness(0, 10, 0, 0);
-                grid.BorderBrush = new SolidColorBrush((Color)Application.Current.Resources["ColorPrimario"]);
-                grid.BorderThickness = new Thickness(0, 1, 0, 0);
-                grid.Padding = new Thickness(10, 20, 10, 10);
             }
 
             ColumnDefinition col1 = new ColumnDefinition();
             ColumnDefinition col2 = new ColumnDefinition();
+            ColumnDefinition col3 = new ColumnDefinition();
 
             col1.Width = new GridLength(1, GridUnitType.Auto);
             col2.Width = new GridLength(1, GridUnitType.Star);
+            col3.Width = new GridLength(1, GridUnitType.Auto);
 
             grid.ColumnDefinitions.Add(col1);
             grid.ColumnDefinitions.Add(col2);
+            grid.ColumnDefinitions.Add(col3);
 
             Image imagen = new Image
             {
@@ -386,7 +469,7 @@ namespace Steam
                 Width = 48,
                 Height = 48,
                 Margin = new Thickness(0, 0, 20, 0),
-                VerticalAlignment = VerticalAlignment.Top
+                VerticalAlignment = VerticalAlignment.Center
             };
 
             imagen.SetValue(Grid.ColumnProperty, 0);
@@ -423,12 +506,16 @@ namespace Steam
                 sp.Children.Add(tbDescripcion);
             }
 
+            sp.SetValue(Grid.ColumnProperty, 1);
+
+            grid.Children.Add(sp);
+
             //----------------------------------------------
 
             StackPanel spBotones = new StackPanel
             {
                 Orientation = Orientation.Horizontal,
-                Margin = new Thickness(0, 20, 0, 0)
+                VerticalAlignment = VerticalAlignment.Center
             };
 
             StackPanel spYoutube = new StackPanel
@@ -446,28 +533,29 @@ namespace Steam
 
             ResourceLoader recursos = new ResourceLoader();
 
-            TextBlock tbYoutube = new TextBlock
-            {
-                Foreground = new SolidColorBrush((Color)Application.Current.Resources["ColorFuente"]),
-                Margin = new Thickness(10, 0, 0, 0),
-                Text = recursos.GetString("VideoYoutube")
-            };
-
-            spYoutube.Children.Add(tbYoutube);
-
             Button2 botonYoutube = new Button2
             {
                 Tag = juegoyLogro,
                 Content = spYoutube,
-                Background = new SolidColorBrush(Colors.Transparent),
+                Background = new SolidColorBrush((Color)Application.Current.Resources["ColorPrimario"]),
                 CornerRadius = new CornerRadius(5),
                 RequestedTheme = ElementTheme.Light,
-                BorderThickness = new Thickness(0)
+                BorderThickness = new Thickness(0),
+                Padding = new Thickness(15, 12, 15, 12),
+                Margin = new Thickness(20, 0, 0, 0)
             };
 
             botonYoutube.Click += AbrirYoutube;
             botonYoutube.PointerEntered += Animaciones.EntraRatonBoton2;
             botonYoutube.PointerExited += Animaciones.SaleRatonBoton2;
+
+            TextBlock tooltipYoutube = new TextBlock
+            {
+                Text = recursos.GetString("TooltipYoutube")
+            };
+
+            ToolTipService.SetToolTip(botonYoutube, tooltipYoutube);
+            ToolTipService.SetPlacement(botonYoutube, PlacementMode.Bottom);
 
             if (trial == true)
             {
@@ -481,16 +569,6 @@ namespace Steam
             spBotones.Children.Add(botonYoutube);
 
             //----------------------------------------------
-
-            TextBlock tbBusqueda = new TextBlock
-            {
-                Foreground = new SolidColorBrush((Color)Application.Current.Resources["ColorFuente"]),
-                Margin = new Thickness(20, 0, 0, 0),
-                Text = recursos.GetString("Search"),
-                VerticalAlignment = VerticalAlignment.Center
-            };
-
-            spBotones.Children.Add(tbBusqueda);
 
             StackPanel spGoogle = new StackPanel
             {
@@ -509,16 +587,25 @@ namespace Steam
             {
                 Tag = juegoyLogro,
                 Content = spGoogle,
-                Background = new SolidColorBrush(Colors.Transparent),
+                Background = new SolidColorBrush((Color)Application.Current.Resources["ColorPrimario"]),
                 CornerRadius = new CornerRadius(5),
                 RequestedTheme = ElementTheme.Light,
                 BorderThickness = new Thickness(0),
+                Padding = new Thickness(15, 12, 15, 12),
                 Margin = new Thickness(20, 0, 0, 0)
             };
 
             botonGoogle.Click += AbrirGoogle;
             botonGoogle.PointerEntered += Animaciones.EntraRatonBoton2;
             botonGoogle.PointerExited += Animaciones.SaleRatonBoton2;
+
+            TextBlock tooltipGoogle = new TextBlock
+            {
+                Text = recursos.GetString("TooltipGoogle")
+            };
+
+            ToolTipService.SetToolTip(botonGoogle, tooltipGoogle);
+            ToolTipService.SetPlacement(botonGoogle, PlacementMode.Bottom);
 
             if (trial == true)
             {
@@ -548,26 +635,31 @@ namespace Steam
             {
                 Tag = juegoyLogro,
                 Content = spBing,
-                Background = new SolidColorBrush(Colors.Transparent),
+                Background = new SolidColorBrush((Color)Application.Current.Resources["ColorPrimario"]),
                 CornerRadius = new CornerRadius(5),
                 RequestedTheme = ElementTheme.Light,
                 BorderThickness = new Thickness(0),
-                Margin = new Thickness(10, 0, 0, 0)
+                Padding = new Thickness(15, 12, 15, 12),
+                Margin = new Thickness(20, 0, 0, 0)
             };
 
             botonBing.Click += AbrirBing;
             botonBing.PointerEntered += Animaciones.EntraRatonBoton2;
             botonBing.PointerExited += Animaciones.SaleRatonBoton2;
 
+            TextBlock tooltipBing = new TextBlock
+            {
+                Text = recursos.GetString("TooltipBing")
+            };
+
+            ToolTipService.SetToolTip(botonBing, tooltipBing);
+            ToolTipService.SetPlacement(botonBing, PlacementMode.Bottom);
+
             spBotones.Children.Add(botonBing);
 
-            sp.Children.Add(spBotones);
+            spBotones.SetValue(Grid.ColumnProperty, 2);
 
-            //----------------------------------------------
-
-            sp.SetValue(Grid.ColumnProperty, 1);
-
-            grid.Children.Add(sp);
+            grid.Children.Add(spBotones);
 
             return grid;
         }
@@ -643,24 +735,9 @@ namespace Steam
         {
             foreach (Grid grid in spYoutube.Children)
             {
-                StackPanel sp = grid.Children[1] as StackPanel;
-
-                StackPanel sp2 = null;
-
-                if (sp.Children[1].GetType() == typeof(StackPanel))
-                {
-                    sp2 = sp.Children[1] as StackPanel;
-                }
-                else if (sp.Children[2].GetType() == typeof(StackPanel))
-                {
-                    sp2 = sp.Children[2] as StackPanel;
-                }
-                
-                if (sp2 != null)
-                {
-                    Button2 boton2 = sp2.Children[0] as Button2;
-                    boton2.IsEnabled = estado;
-                }
+                StackPanel sp = grid.Children[2] as StackPanel;
+                Button2 boton2 = sp.Children[0] as Button2;
+                boton2.IsEnabled = estado;
             }
         }
 
