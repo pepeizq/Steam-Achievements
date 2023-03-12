@@ -5,7 +5,6 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.Windows.ApplicationModel.Resources;
 using System;
-using Windows.ApplicationModel;
 using Windows.System;
 using Windows.UI;
 using static Steam_Achievements_WinUI.MainWindow;
@@ -172,12 +171,12 @@ namespace Interfaz
 
         public async static void BotonAbrirVotar(object sender, RoutedEventArgs e)
         {
-            await Launcher.LaunchUriAsync(new Uri("ms-windows-store:REVIEW?PFN=" + Package.Current.Id.FamilyName));
+            await Launcher.LaunchUriAsync(new Uri(AppDatos.Votar));
         }
 
         public async static void BotonAbrirCodigoFuente(object sender, RoutedEventArgs e)
         {
-            await Launcher.LaunchUriAsync(new Uri("https://github.com/pepeizq/Steam-Achievements"));
+            await Launcher.LaunchUriAsync(new Uri(AppDatos.Github));
         }
 
         public async static void BotonAbrirContactar(object sender, RoutedEventArgs e)
@@ -187,7 +186,7 @@ namespace Interfaz
 
         public async static void BotonAbrirNotasParche(object sender, RoutedEventArgs e)
         {
-            await Launcher.LaunchUriAsync(new Uri("https://pepeizqapps.com/patch-notes/"));
+            await Launcher.LaunchUriAsync(new Uri(AppDatos.NotasParches));
         }
 
         public async static void BotonAbrirWeb1(object sender, RoutedEventArgs e)

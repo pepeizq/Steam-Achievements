@@ -1,4 +1,5 @@
 using CommunityToolkit.WinUI.UI.Controls;
+using FontAwesome6.Fonts;
 using Interfaz;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -17,6 +18,7 @@ namespace Steam_Achievements_WinUI
 
             BarraTitulo.Generar(this);
             BarraTitulo.CambiarTitulo(null);
+            Cerrar.Cargar();
             Pestañas.Cargar();
             ScrollViewers.Cargar();
             Interfaz.Menu.Cargar();
@@ -36,6 +38,15 @@ namespace Steam_Achievements_WinUI
             ObjetosVentana.menuItemMenu = menuItemMenu;
             ObjetosVentana.nvItemOpciones = nvItemOpciones;
             ObjetosVentana.nvItemSubirArriba = nvItemSubirArriba;
+            ObjetosVentana.gridCierre = gridCierre;
+
+            //-------------------------------------------------------------------
+
+            ObjetosVentana.botonCerrarAppSi = botonCerrarAppSi;
+            ObjetosVentana.botonCerrarAppNo = botonCerrarAppNo;
+            ObjetosVentana.iconoCerrarAppAzar = iconoCerrarAppAzar;
+            ObjetosVentana.tbCerrarAppAzar = tbCerrarAppAzar;
+            ObjetosVentana.botonCerrarAppAzar = botonCerrarAppAzar;
 
             //-------------------------------------------------------------------
 
@@ -109,6 +120,15 @@ namespace Steam_Achievements_WinUI
             public static MenuFlyout menuItemMenu { get; set; }
             public static NavigationViewItem nvItemOpciones { get; set; }
             public static NavigationViewItem nvItemSubirArriba { get; set; }
+            public static Grid gridCierre { get; set; }
+
+            //-------------------------------------------------------------------
+
+            public static Button botonCerrarAppSi { get; set; }
+            public static Button botonCerrarAppNo { get; set; }
+            public static FontAwesome iconoCerrarAppAzar { get; set; }
+            public static TextBlock tbCerrarAppAzar { get; set; }
+            public static Button botonCerrarAppAzar { get; set; }
 
             //-------------------------------------------------------------------
 
