@@ -27,7 +27,7 @@ namespace Steam
 {
     public static class Logros
     {
-        public static async void Cargar()
+        public static void Cargar()
         {
             ObjetosVentana.imagenLogrosCabecera.ImageFailed += CabeceraImagenFalla;
 
@@ -53,15 +53,6 @@ namespace Steam
             CambiarPestaña(1);
 
             //---------------------------------
-
-            bool trial = await Trial.Detectar();
-
-            if (trial == true)
-            {
-                ObjetosVentana.botonLogrosTrialComprarApp.Click += Trial.BotonAbrirCompra;
-                ObjetosVentana.botonLogrosTrialComprarApp.PointerEntered += Animaciones.EntraRatonBoton2;
-                ObjetosVentana.botonLogrosTrialComprarApp.PointerExited += Animaciones.SaleRatonBoton2;
-            }
 
             ObjetosVentana.botonLogrosSteam.Click += AbrirLogrosJuego;
             ObjetosVentana.botonLogrosSteam.PointerEntered += Animaciones.EntraRatonBoton2;
@@ -336,17 +327,6 @@ namespace Steam
                     }
                 }
 
-                bool trial = await Trial.Detectar();
-
-                if (trial == true)
-                {
-                    ObjetosVentana.gridLogrosTrialMensaje.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    ObjetosVentana.gridLogrosTrialMensaje.Visibility = Visibility.Collapsed;
-                }
-
                 if (logrosCompletados.Count == 0)
                 {
                     ObjetosVentana.spLogrosBotones.Children[0].Visibility = Visibility.Collapsed;
@@ -372,11 +352,11 @@ namespace Steam
                     {                        
                         if (i == 0)
                         {
-                            ObjetosVentana.spLogrosCompletados.Children.Add(LogroEstilo(cuentayJuego.Juego, logro, true, trial));
+                            ObjetosVentana.spLogrosCompletados.Children.Add(LogroEstilo(cuentayJuego.Juego, logro, true));
                         }
                         else
                         {
-                            ObjetosVentana.spLogrosCompletados.Children.Add(LogroEstilo(cuentayJuego.Juego, logro, false, trial));
+                            ObjetosVentana.spLogrosCompletados.Children.Add(LogroEstilo(cuentayJuego.Juego, logro, false));
                         }
 
                         i += 1;
@@ -402,11 +382,11 @@ namespace Steam
                     {
                         if (i == 0)
                         {
-                            ObjetosVentana.spLogrosPendientes.Children.Add(LogroEstilo(cuentayJuego.Juego, logro, true, trial));
+                            ObjetosVentana.spLogrosPendientes.Children.Add(LogroEstilo(cuentayJuego.Juego, logro, true));
                         }
                         else
                         {
-                            ObjetosVentana.spLogrosPendientes.Children.Add(LogroEstilo(cuentayJuego.Juego, logro, false, trial));
+                            ObjetosVentana.spLogrosPendientes.Children.Add(LogroEstilo(cuentayJuego.Juego, logro, false));
                         }
                         
                         i += 1;
@@ -424,7 +404,7 @@ namespace Steam
             imagen.Margin = new Thickness(10);
         }
 
-        public static Grid LogroEstilo(SteamJuego juego, Logro logro, bool primero, bool trial)
+        public static Grid LogroEstilo(SteamJuego juego, Logro logro, bool primero)
         {
             SteamJuegoyLogro juegoyLogro = new SteamJuegoyLogro
             {
@@ -557,15 +537,6 @@ namespace Steam
             ToolTipService.SetToolTip(botonYoutube, tooltipYoutube);
             ToolTipService.SetPlacement(botonYoutube, PlacementMode.Bottom);
 
-            if (trial == true)
-            {
-                botonYoutube.IsEnabled = false;
-            }
-            else
-            {
-                botonYoutube.IsEnabled = true;
-            }
-
             spBotones.Children.Add(botonYoutube);
 
             //----------------------------------------------
@@ -606,15 +577,6 @@ namespace Steam
 
             ToolTipService.SetToolTip(botonGoogle, tooltipGoogle);
             ToolTipService.SetPlacement(botonGoogle, PlacementMode.Bottom);
-
-            if (trial == true)
-            {
-                botonGoogle.IsEnabled = false;
-            }
-            else
-            {
-                botonGoogle.IsEnabled = true;
-            }
 
             spBotones.Children.Add(botonGoogle);
 

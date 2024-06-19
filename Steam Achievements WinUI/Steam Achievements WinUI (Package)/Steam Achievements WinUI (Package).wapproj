@@ -48,6 +48,7 @@
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <AppxBundlePlatforms>x86|x64|arm64</AppxBundlePlatforms>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+    <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <DefaultLanguage>en-US</DefaultLanguage>
@@ -145,13 +146,13 @@
     <PackageReference Include="CommunityToolkit.WinUI.Notifications" Version="7.1.2" />
     <PackageReference Include="CommunityToolkit.WinUI.UI.Controls" Version="7.1.2" />
     <PackageReference Include="FontAwesome6.Fonts.WinUI" Version="2.5.1" />
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.230217.4">
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240607001">
       <IncludeAssets>build</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="[10.0.22621.755]">
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1">
       <IncludeAssets>build</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="VideoLibrary" Version="3.2.3" />
     <PackageReference Include="YoutubeExplode" Version="6.2.8" />
   </ItemGroup>
